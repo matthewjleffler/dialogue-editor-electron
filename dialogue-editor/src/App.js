@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { simpleAction } from './actions/simpleAction';
 import './App.css';
-import DialogueTree from './DialogueTree';
-import DialogueView from './DialogueView';
-import DialogueOptions from './DialogueOptions';
+import DialogueTree from './DialogueTree/DialogueTree';
+import DialogueView from './DialogueView/DialogueView';
+import DialogueOptions from './DialogueOptions/DialogueOptions';
 
 class App extends Component {
   constructor() {

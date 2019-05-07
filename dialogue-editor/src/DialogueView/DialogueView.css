@@ -1,0 +1,16 @@
+.ViewContainer {
+  padding: 5px 5px 5px 5px;
+  flex: 1.8;
+  min-width: 370px;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.DialogueEditor {
+  width: 350px;
+  height: 200px;
+  background-color: #ffff00;
+  margin: 3px;
+}

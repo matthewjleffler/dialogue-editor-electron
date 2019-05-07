@@ -9,6 +9,7 @@
 
 .Header {
   height: 23px;
+  background-color: #181c24;
   -webkit-app-region: drag;
 }
 

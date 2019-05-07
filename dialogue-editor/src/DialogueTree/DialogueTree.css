@@ -1,0 +1,13 @@
+.TreeContainer {
+  background-color: #383c44;
+  flex: 1;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+
+.TreeLine {
+  margin: 2px;
+  line-height: 25px;
+}

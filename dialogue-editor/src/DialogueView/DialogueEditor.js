@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import './DialogueView.css';
 
-class DialogueView extends Component {
+class DialogueEditor extends Component {
 
   render() {
     return (
-      <div className="ViewContainer">
+      <div className="DialogueEditor">
       </div>
     );
   }
 }
 
-export default DialogueView;
+export default DialogueEditor;
