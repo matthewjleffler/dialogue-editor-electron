@@ -9,14 +9,14 @@ let mainWindow;
 function createWindow() {
   mainWindow = new BrowserWindow({
     backgroundColor: '#F7F7F7',
-    minWidth: 880,
+    minWidth: 700,
     show: false,
     titleBarStyle: 'hidden',
     webPreferences: {
       nodeIntegration: false,
     },
     height: 860,
-    width: 1280,
+    width: 1350,
   });
 
   mainWindow.loadURL(

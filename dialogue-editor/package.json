@@ -1,17 +1,12 @@
 {
-  "name": "example",
+  "name": "DialogueEditor",
   "version": "1.0.0",
-  "description": "Building and Publishing a React Based Electron App From Scratch",
+  "description": "Dialogue Editor",
   "private": false,
-  "author": "Nick Parsons <nparsons08@gmail.com>",
+  "author": "Matt Leffler <matthewjleffler@gmail.com>",
   "license": "MIT",
   "homepage": "./",
   "main": "public/electron.js",
-  "keywords": [
-    "Example",
-    "React",
-    "Electron"
-  ],
   "scripts": {
     "dev": "yarn react-scripts start",
     "build": "react-scripts build",
