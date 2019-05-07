@@ -14,7 +14,6 @@ function createWindow() {
     titleBarStyle: 'hidden',
     webPreferences: {
       nodeIntegration: false,
-      preload: __dirname + '/preload.js',
     },
     height: 860,
     width: 1280,
@@ -91,6 +90,14 @@ function generateMenu() {
         { role: 'zoomout' },
         { type: 'separator' },
         { role: 'togglefullscreen' },
+      ],
+    },
+    {
+      label: 'Region',
+      submenu: [
+        { label: 'en' },
+        { type: 'separator' },
+        { label: 'Create New' },
       ],
     },
     {
