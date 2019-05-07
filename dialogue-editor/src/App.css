@@ -16,34 +16,3 @@
   display: flex;
   flex: 1;
 }
-
-.DialogueTree {
-  flex: 1.5;
-  padding: 5px 5px 5px 5px;
-  display: flex;
-}
-
-.DialogueTreeContent {
-  height: 100%;
-  width: 100%;
-}
-
-.DialogueView {
-  padding: 5px 5px 5px 5px;
-  flex: 1;
-}
-
-.DialogueOptions {
-  padding: 5px 5px 5px 5px;
-  width: 150px;
-}
-
-/* .App-header {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: left;
-  justify-content: left;
-  font-size: calc(10px + 2vmin);
-  color: black;
-} */

@@ -1,23 +1,46 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { simpleAction } from './actions/simpleAction';
 import './App.css';
+import DialogueTree from './DialogueTree';
+import DialogueView from './DialogueView';
+import DialogueOptions from './DialogueOptions';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="Header"/>
-      <div className="DialogueContainer">
-        <div className="DialogueTree">
-          <div className="DialogueTreeContent"/>
-        </div>
-        <div className="DialogueView">
-          <div className="DialogueTreeContent"/>
-        </div>
-        <div className="DialogueOptions">
-          <div className="DialogueTreeContent"/>
+class App extends Component {
+  constructor() {
+    super();
+
+    // this.state = {
+    //   test: "test string",
+    // };
+
+    this.simpleAction = this.simpleAction.bind(this);
+  }
+
+  simpleAction(event) {
+    this.props.simpleAction();
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <header className="Header"/>
+        <div className="DialogueContainer">
+          <DialogueTree />
+          <DialogueView />
+          <DialogueOptions />
         </div>
       </div>
-    </div>
-  );
+    ); 
+  }
 }
 
-export default App;
+const mapStateToProps = state => ({
+  ...state
+});
+
+const mapDispatchToProps = dispatch => ({
+  simpleAction: () => dispatch(simpleAction())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
