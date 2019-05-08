@@ -1,5 +1,8 @@
 .OptionsContainer {
-  background-color: #383c44;
-  padding: 5px 5px 5px 5px;
+  padding: 5px;
   width: 150px;
+}
+
+.OptionsContainer.Scrolling {
+  background-color: #383c44;
 }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { simpleAction } from './actions/simpleAction';
 import './App.css';
+import StatusBar from './StatusBar/StatusBar';
 import DialogueTree from './DialogueTree/DialogueTree';
 import DialogueView from './DialogueView/DialogueView';
 import DialogueOptions from './DialogueOptions/DialogueOptions';
@@ -25,6 +26,7 @@ class App extends Component {
     return (
       <div className="App">
         <header className="Header"/>
+        <StatusBar />
         <div className="DialogueContainer">
           <DialogueTree />
           <DialogueView />

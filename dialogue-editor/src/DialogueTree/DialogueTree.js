@@ -12,7 +12,7 @@ class DialogueTree extends Component {
     }
 
     return (
-      <div className="TreeContainer">
+      <div className="TreeContainer Scrolling">
         {list}
       </div>
     );

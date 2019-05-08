@@ -5,7 +5,7 @@ class DialogueOptions extends Component {
 
   render() {
     return (
-      <div className="OptionsContainer">
+      <div className="OptionsContainer Scrolling">
       </div>
     );
   }

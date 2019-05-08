@@ -93,14 +93,6 @@ function generateMenu() {
       ],
     },
     {
-      label: 'Region',
-      submenu: [
-        { label: 'en' },
-        { type: 'separator' },
-        { label: 'Create New' },
-      ],
-    },
-    {
       role: 'window',
       submenu: [{ role: 'minimize' }, { role: 'close' }],
     },
