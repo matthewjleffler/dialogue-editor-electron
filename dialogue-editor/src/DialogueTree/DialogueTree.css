@@ -11,6 +11,15 @@
   background-color: #383c44;
 }
 
+.TreeContainer.Scrolling::-webkit-scrollbar { 
+  background-color: transparent;
+}
+
+.TreeContainer.Scrolling::-webkit-scrollbar-thumb { 
+  background-color: #484c54;
+  border-radius: 20px;
+}
+
 .TreeLine {
   margin: 2px;
   line-height: 25px;

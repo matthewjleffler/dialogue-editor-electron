@@ -12,6 +12,15 @@
   align-content: flex-start;
 }
 
+.ViewContainer.Scrolling::-webkit-scrollbar { 
+  background-color: transparent;
+}
+
+.ViewContainer.Scrolling::-webkit-scrollbar-thumb { 
+  background-color: #484c54;
+  border-radius: 20px;
+}
+
 .DialogueEditor {
   margin: 3px;
   display: flex;
