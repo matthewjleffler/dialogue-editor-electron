@@ -5,25 +5,31 @@ import '../DialogueView/DialogueView.css';
 import '../DialogueOptions/DialogueOptions.css';
 
 class StatusBar extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      regionValue: 'en',
+    };
+  }
 
   render() {
-    const testStyle = {
-      // backgroundColor: '#ff0000',
-      flex: '1',
-      height: '100%',
-    };
-
     return (
       <div className="StatusBar">
         <div className="TreeContainer">
-          <div style={testStyle}>
-            Region:
-          </div>
+          <form>
+            <label>
+              Region:
+              <select value={this.state.regionValue}>
+                <option value='en'>{'en'}</option>
+                <option disabled>_________</option>
+                <option value='new'>{'New Region'}</option>
+              </select>
+            </label>
+          </form>
         </div>
         <div className="ViewContainer">
-          <div style={testStyle}>
-            No Entry Selected
-          </div>
+          No Entry Selected
         </div>
         <div className="OptionsContainer">
         </div>

@@ -5,14 +5,8 @@ class DialogueEditor extends Component {
   constructor(props) {
     super(props);
     
-    const linestring = 'abcdefghijklmnopqrstuvwxyzabcdefghijk';
-    let lines = '';
-    for (let i = 0; i < 7; i++) {
-      lines += linestring;
-    }
-
     this.state = {
-      value: lines,
+      value: "",
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -30,9 +24,10 @@ class DialogueEditor extends Component {
 
   render() {
     return (
+      // TODO max rows
       <div className="DialogueEditor">
         <div className="Status">
-          <label className="Page">{'Page ' + this.props.number}</label>
+          <label className="Page">{'Page ' + (this.props.number + 1)}</label>
           <label className="Page">{'Chars: ' + this.state.value.length}</label>
         </div>
         <div className="View">
