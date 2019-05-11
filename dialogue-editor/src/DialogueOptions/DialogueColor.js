@@ -16,12 +16,16 @@ class DialogueColor extends Component {
   createRadioButton(value, color) {
     return (
       // TODO CLICKABLE IN WHOLE ROW
-      <div className="form-check" style={{backgroundColor:color}}>
+      <div 
+        className="form-check" 
+        style={{backgroundColor:color}}
+        key={"entry_color_" + value}
+      >
         <input
           type="radio"
           name="react-tips"
           value={value}
-          checked={this.state.checkedOption == value}
+          checked={this.state.checkedOption === value}
           className="form-check-input"
           onChange={this.handleRadioChange}
         />
@@ -50,7 +54,7 @@ class DialogueColor extends Component {
       <div className="DialogueColor">
         <label>
           Highlight Color
-          <form class="Padding">
+          <form className="Padding">
             {radioButtons}
           </form>
         </label>

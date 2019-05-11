@@ -58,11 +58,44 @@ function createWindow() {
   });
 };
 
+function openFileAndRead() {
+  const dialog = require('electron').dialog;
+  const paths = dialog.showOpenDialog({
+      title: "Open Project",
+      filters: [{ name: "Project", extensions: ['dpr'] }],
+      properties: ["openFile"],
+    },
+  );
+  if (paths === undefined) {
+    // TODO log no file opened
+    return;
+  }
+  // const path = paths
+  console.log(paths[0]);
+  const fs = require('fs');
+  fs.readFile(paths[0], 'utf-8', (err, data) => {
+    if (err) {
+      // TODO log error
+      return;
+    }
+    const convert = require('xml-js');
+    const result = convert.xml2js(data);
+  });
+}
+
 function generateMenu() {
   const template = [
     {
       label: 'File',
-      submenu: [{ role: 'about' }, { role: 'quit' }],
+      submenu: [
+        {
+          click: openFileAndRead,
+          label: "Open Project",
+        },
+        { type: 'separator' },
+        { role: 'about' },
+        { role: 'quit' },
+      ],
     },
     {
       label: 'Edit',
@@ -73,7 +106,6 @@ function generateMenu() {
         { role: 'cut' },
         { role: 'copy' },
         { role: 'paste' },
-        { role: 'pasteandmatchstyle' },
         { role: 'delete' },
         { role: 'selectall' },
       ],
@@ -82,12 +114,7 @@ function generateMenu() {
       label: 'View',
       submenu: [
         { role: 'reload' },
-        { role: 'forcereload' },
         { role: 'toggledevtools' },
-        { type: 'separator' },
-        { role: 'resetzoom' },
-        { role: 'zoomin' },
-        { role: 'zoomout' },
         { type: 'separator' },
         { role: 'togglefullscreen' },
       ],

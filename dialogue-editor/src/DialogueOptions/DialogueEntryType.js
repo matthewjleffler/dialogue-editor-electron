@@ -16,13 +16,16 @@ class DialogueEntryType extends Component {
   createRadioButton(value, name) {
     return (
       // TODO CLICKABLE IN WHOLE ROW
-      <div className="form-check">
+      <div
+        className="form-check"
+        key={'entry_type_' + value}
+      >
         <label>
           <input
             type="radio"
             name="react-tips"
             value={value}
-            checked={this.state.checkedOption == value}
+            checked={this.state.checkedOption === value}
             className="form-check-input"
             onChange={this.handleRadioChange}
           />
@@ -48,7 +51,7 @@ class DialogueEntryType extends Component {
       <div className="EntryType">
         <label>
           Entry Type
-          <form class="Padding">
+          <form className="Padding">
             {radiobuttons}
           </form>
         </label>

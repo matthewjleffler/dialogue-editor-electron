@@ -11,6 +11,12 @@ class StatusBar extends Component {
     this.state = {
       regionValue: 'en',
     };
+
+    this.onChange = this.onChange.bind(this);
+  }
+
+  onChange(event) {
+    console.log("Region Changed");
   }
 
   render() {
@@ -20,7 +26,10 @@ class StatusBar extends Component {
           <form>
             <label>
               Region:
-              <select value={this.state.regionValue}>
+              <select
+                value={this.state.regionValue}
+                onChange={this.onChange}
+              >
                 <option value='en'>{'en'}</option>
                 <option disabled>_________</option>
                 <option value='new'>{'New Region'}</option>
