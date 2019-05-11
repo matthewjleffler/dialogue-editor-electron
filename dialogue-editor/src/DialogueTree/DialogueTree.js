@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../../node_modules/react-ui-tree/dist/react-ui-tree.css'; // TODO this
+import '../../node_modules/react-ui-tree/dist/react-ui-tree.css';
 import './DialogueTree.css';
 import cx from 'classnames'
 import Tree from 'react-ui-tree';
@@ -9,20 +9,8 @@ class DialogueTree extends Component {
     super(props);
 
     const tree = {
-      "module": "react-ui-tree",
-      "children": []
-    }
-
-    for (let i = 0; i < 100; i++) {
-      tree.children.push(
-        {
-          "collapsed": true,
-          "module": "dist",
-          "children": [{
-            "module": "node.js"
-          }]
-        }
-      );
+      "module": "Content",
+      "children": [],
     }
 
     this.state = {
@@ -38,13 +26,18 @@ class DialogueTree extends Component {
           'is-active': node === this.state.active
         })}
         onClick={this.onClickNode.bind(null, node)}
+        onContextMenu={this.onContext.bind(null, node)}
       >
         {node.module}
       </span>
     );
   };
 
-  onClickNode = node => {
+  onContext = (node) => {
+    console.log("Context Clicked " + node.module);
+  }
+
+  onClickNode = (node) => {
     this.setState({
       active: node
     });
