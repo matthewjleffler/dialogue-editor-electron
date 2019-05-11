@@ -40,8 +40,6 @@ class DialogueTree extends Component {
   };
 
   handleChange = tree => {
-    console.log("CHANGED");
-    console.log(tree);
     this.props.modifyTreeAction(tree);
   };
 

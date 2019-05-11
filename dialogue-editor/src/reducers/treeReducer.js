@@ -1,6 +1,6 @@
 
 const initialState = {
-  tree: { module: "Content Test", children:[ { module: "test" }, { module: "test2" } ] }
+  tree: { module: "Content" }
 };
 
 export default (state = initialState, action) => {
