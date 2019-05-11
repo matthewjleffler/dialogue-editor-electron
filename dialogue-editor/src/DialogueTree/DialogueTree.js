@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { modifyTreeAction } from '../actions/treeAction'
 import '../../node_modules/react-ui-tree/dist/react-ui-tree.css';
 import './DialogueTree.css';
 import cx from 'classnames'
@@ -8,14 +10,8 @@ class DialogueTree extends Component {
   constructor(props) {
     super(props);
 
-    const tree = {
-      "module": "Content",
-      "children": [],
-    }
-
     this.state = {
       active: null,
-      tree: tree,
     }
   }
 
@@ -44,9 +40,9 @@ class DialogueTree extends Component {
   };
 
   handleChange = tree => {
-    this.setState({
-      tree: tree
-    });
+    console.log("CHANGED");
+    console.log(tree);
+    this.props.modifyTreeAction(tree);
   };
 
   render() {
@@ -54,7 +50,7 @@ class DialogueTree extends Component {
       <div className="TreeContainer Scrolling">
         <Tree
           paddingLeft={20}
-          tree={this.state.tree}
+          tree={this.props.tree}
           onChange={this.handleChange}
           isNodeCollapsed={this.isNodeCollapsed}
           renderNode={this.renderNode}
@@ -64,4 +60,12 @@ class DialogueTree extends Component {
   }
 }
 
-export default DialogueTree;
+const mapStateToProps = state => ({
+  tree: state.treeReducer.tree,
+});
+
+const mapDispatchToProps = dispatch => ({
+  modifyTreeAction: (tree) => dispatch(modifyTreeAction.bind(null, tree)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DialogueTree);
