@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { modifyTreeAction } from '../actions/treeAction'
-import '../../node_modules/react-ui-tree/dist/react-ui-tree.css';
+import { modifyTreeAction } from '../../actions/treeAction'
+import '../../../node_modules/react-ui-tree/dist/react-ui-tree.css';
 import './DialogueTree.css';
 import cx from 'classnames'
 import Tree from 'react-ui-tree';
@@ -27,16 +27,13 @@ class DialogueTree extends Component {
   }
 
   onTreeChanged(event, data) {
-    console.log("Tree Changed");
-    // console.log(data.msg.data);
-
     const tree = { 
       module: 'Content',
       children: [],
+      isEntry: false,
       collapsed:  false,
     };
     this.buildTreeRecursive(data.msg.data.group, tree, false);
-    
     this.handleChange(tree);
     this.setState({
       active: null,
@@ -49,6 +46,7 @@ class DialogueTree extends Component {
       newParent = {
         module: treeNode._attributes.id,
         children: [],
+        isEntry: false,
         collapsed: true,
       }
       parent.children.push(newParent);
@@ -69,20 +67,21 @@ class DialogueTree extends Component {
     if (treeNode.entry !== undefined) {
       if (Array.isArray(treeNode.entry)) {
         treeNode.entry.forEach( (entry) => {
-          const newEntry = {
-            module: entry._attributes.id,
-            leaf: true,
-          }
-          newParent.children.push(newEntry);
+          this.addEntry(entry, newParent);
         });
       } else {
-        const newEntry = {
-          module: treeNode.entry._attributes.id,
-          leaf: true,
-        }
-        newParent.children.push(newEntry);
+        this.addEntry(treeNode.entry, newParent);
       }
     }
+  }
+
+  addEntry(entry, parent) {
+    const newEntry = {
+      module: entry._attributes.id,
+      isEntry: true,
+      leaf: true,
+    }
+    parent.children.push(newEntry);
   }
 
   renderNode = node => {
@@ -107,6 +106,12 @@ class DialogueTree extends Component {
     this.setState({
       active: node
     });
+
+    if (node.isEntry) {
+      console.log("Entry!");
+    } else {
+      console.log("Not entry!");
+    }
   };
 
   handleChange = tree => {

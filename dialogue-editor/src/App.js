@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
-import StatusBar from './StatusBar/StatusBar';
-import DialogueTree from './DialogueTree/DialogueTree';
-import DialogueView from './DialogueView/DialogueView';
-import DialogueOptions from './DialogueOptions/DialogueOptions';
+import StatusBar from './components/StatusBar/StatusBar';
+import DialogueTree from './components/DialogueTree/DialogueTree';
+import DialogueView from './components/DialogueView/DialogueView';
+import DialogueOptions from './components/DialogueOptions/DialogueOptions';
 
 class App extends Component {
   render() {
