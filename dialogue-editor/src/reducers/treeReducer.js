@@ -7,7 +7,7 @@ export default (state = initialState, action) => {
   switch (action.type) {
    case 'MODIFY_TREE':
     return {
-      result: action.payload
+      tree: action.payload
     }
    default:
     return state

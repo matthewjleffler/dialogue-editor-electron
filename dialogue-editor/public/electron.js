@@ -13,7 +13,7 @@ function createWindow() {
     show: false,
     titleBarStyle: 'hidden',
     webPreferences: {
-      nodeIntegration: false,
+      nodeIntegration: true,
     },
     height: 860,
     width: 1350,
@@ -70,8 +70,6 @@ function openFileAndRead() {
     // TODO log no file opened
     return;
   }
-  // const path = paths
-  console.log(paths[0]);
   const fs = require('fs');
   fs.readFile(paths[0], 'utf-8', (err, data) => {
     if (err) {
@@ -79,7 +77,8 @@ function openFileAndRead() {
       return;
     }
     const convert = require('xml-js');
-    const result = convert.xml2js(data);
+    const result = convert.xml2js(data, {compact: true});
+    mainWindow.webContents.send('tree_change', {msg: result});
   });
 }
 
