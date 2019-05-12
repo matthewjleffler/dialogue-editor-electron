@@ -4,13 +4,26 @@ import './DialoguePages.css';
 class Page extends Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
-      value: "",
+      value: this.getPageData(props),
     }
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  getPageData(props) {
+    // No page data present
+    if (props.region === undefined) {
+      return "";
+    }
+    if (Array.isArray(props.region.page)) {
+      // Get the right page from the array
+      return props.region.page[props.index]._cdata;
+    }
+    // We are a single page, return that data
+    return props.region.page._cdata;
   }
 
   handleChange(event) {
@@ -18,16 +31,16 @@ class Page extends Component {
   }
 
   handleSubmit(event) {
-    alert('SUBMIT');
     event.preventDefault();
   }
 
   render() {
     return (
       // TODO max rows
+      // TODO render newlines and save them back
       <div className="Page">
         <div className="Status">
-          <label className="Page">{'Page ' + (this.props.number + 1)}</label>
+          <label className="Page">{'Page ' + (this.props.index + 1)}</label>
           <label className="Page">{'Chars: ' + this.state.value.length}</label>
         </div>
         <div className="View">
