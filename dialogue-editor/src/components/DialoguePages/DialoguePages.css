@@ -1,10 +1,10 @@
-.ViewContainer {
+.DialoguePagesContainer {
   padding: 5px;
   flex: 1.8;
   min-width: 365px;
 }
 
-.ViewContainer.Scrolling {
+.DialoguePagesContainer.Scrolling {
   overflow-y: scroll;
   display: flex;
   flex-direction: row;
@@ -12,33 +12,34 @@
   align-content: flex-start;
 }
 
-.ViewContainer.Scrolling::-webkit-scrollbar { 
+.DialoguePagesContainer.Scrolling::-webkit-scrollbar { 
   background-color: transparent;
 }
 
-.ViewContainer.Scrolling::-webkit-scrollbar-thumb { 
+.DialoguePagesContainer.Scrolling::-webkit-scrollbar-thumb { 
   background-color: #484c54;
   border-radius: 20px;
 }
 
-.DialogueEditor {
+.Page {
   margin: 3px;
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
+  width: 340px;
 }
 
-.DialogueEditor .View {
-  flex: 1;
+.Page .View {
+  /* flex: 1; */
   background-color: #383c44;
   display: flex;
 }
 
-.DialogueEditor .ViewForm {
+.Page .ViewForm {
   box-sizing: border-box;
-  flex: 1;
+  /* flex: 1; */
 }
 
-.DialogueEditor .ViewTextArea {
+.Page .ViewTextArea {
   background-color: transparent;
   border-color: transparent;
   resize: none;
@@ -50,18 +51,18 @@
   font-size: 15px;
 }
 
-.DialogueEditor .Status {
+.Page .Status {
   display: flex;
   flex-direction: row;
   height: 30px;
 }
 
-.DialogueEditor .Status .Page {
+.Page .Status .Page {
   flex: 1;
   align-self: center;
 }
 
-.DialogueEditor .Controls {
+.Page .Controls {
   display: flex;
   flex-direction: row;
   justify-content: space-between;

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import './DialogueView.css';
+import './DialoguePages.css';
 
-class DialogueEditor extends Component {
+class Page extends Component {
   constructor(props) {
     super(props);
     
@@ -25,7 +25,7 @@ class DialogueEditor extends Component {
   render() {
     return (
       // TODO max rows
-      <div className="DialogueEditor">
+      <div className="Page">
         <div className="Status">
           <label className="Page">{'Page ' + (this.props.number + 1)}</label>
           <label className="Page">{'Chars: ' + this.state.value.length}</label>
@@ -50,4 +50,4 @@ class DialogueEditor extends Component {
   }
 }
 
-export default DialogueEditor;
+export default Page;

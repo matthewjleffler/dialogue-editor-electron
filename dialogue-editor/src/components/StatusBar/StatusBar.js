@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import './StatusBar.css';
 import '../DialogueTree/DialogueTree.css';
-import '../DialogueView/DialogueView.css';
+import '../DialoguePages/DialoguePages.css';
 import '../DialogueOptions/DialogueOptions.css';
 
 class StatusBar extends Component {
@@ -20,6 +21,11 @@ class StatusBar extends Component {
   }
 
   render() {
+    let entryTitle = "No Entry Selected";
+    if (this.props.entry !== null) {
+      entryTitle = "Entry: " + this.props.entry._attributes.id;
+    }
+
     return (
       <div className="StatusBar">
         <div className="TreeContainer">
@@ -37,8 +43,8 @@ class StatusBar extends Component {
             </label>
           </form>
         </div>
-        <div className="ViewContainer">
-          No Entry Selected
+        <div className="DialoguePagesContainer">
+          {entryTitle}
         </div>
         <div className="OptionsContainer">
         </div>
@@ -47,4 +53,8 @@ class StatusBar extends Component {
   }
 }
 
-export default StatusBar;
+const mapStateToProps = state => ({
+  entry: state.entryReducer.entry,
+});
+
+export default connect(mapStateToProps)(StatusBar);

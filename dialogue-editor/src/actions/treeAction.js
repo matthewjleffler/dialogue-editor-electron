@@ -5,3 +5,10 @@ export const modifyTreeAction = (tree) => dispatch => {
     payload: tree,
   });
 }
+
+export const setTreeActiveAction = (active) => dispatch => {
+  dispatch({
+    type: 'SET_ACTIVE',
+    payload: active,
+  });
+}

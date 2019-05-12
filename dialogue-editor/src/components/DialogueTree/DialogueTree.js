@@ -1,94 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { modifyTreeAction } from '../../actions/treeAction'
+import { modifyTreeAction, setTreeActiveAction } from '../../actions/treeAction';
+import { setActiveEntryAction } from '../../actions/entryActions';
 import '../../../node_modules/react-ui-tree/dist/react-ui-tree.css';
 import './DialogueTree.css';
 import cx from 'classnames'
 import Tree from 'react-ui-tree';
-const { ipcRenderer } = window.require('electron');
 
 class DialogueTree extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      active: null,
-    }
-
-    this.onTreeChanged = this.onTreeChanged.bind(this);
-  }
-
-  componentDidMount() {
-    ipcRenderer.on('tree_change', this.onTreeChanged);
-  }
-
-  componentWillUnmount() {
-    ipcRenderer.removeListener('tree_change', this.onTreeChanged);
-  }
-
-  onTreeChanged(event, data) {
-    const tree = { 
-      module: 'Content',
-      children: [],
-      isEntry: false,
-      collapsed:  false,
-    };
-    this.buildTreeRecursive(data.msg.data.group, tree, false);
-    this.handleChange(tree);
-    this.setState({
-      active: null,
-    });
-  }
-
-  buildTreeRecursive(treeNode, parent, createNode = true) {
-    let newParent = parent;
-    if (createNode) {
-      newParent = {
-        module: treeNode._attributes.id,
-        children: [],
-        isEntry: false,
-        collapsed: true,
-      }
-      parent.children.push(newParent);
-    }
-
-    // Step through and create groups
-    if (treeNode.group !== undefined) {
-      if (Array.isArray(treeNode.group)) {
-        treeNode.group.forEach( (group) => {
-          this.buildTreeRecursive(group, newParent);
-        });
-      } else {
-        this.buildTreeRecursive(treeNode.group, newParent);
-      }
-    }
-
-    // Create entries
-    if (treeNode.entry !== undefined) {
-      if (Array.isArray(treeNode.entry)) {
-        treeNode.entry.forEach( (entry) => {
-          this.addEntry(entry, newParent);
-        });
-      } else {
-        this.addEntry(treeNode.entry, newParent);
-      }
-    }
-  }
-
-  addEntry(entry, parent) {
-    const newEntry = {
-      module: entry._attributes.id,
-      isEntry: true,
-      leaf: true,
-    }
-    parent.children.push(newEntry);
-  }
-
   renderNode = node => {
     return (
       <span
         className={cx('node', {
-          'is-active': node === this.state.active
+          'is-active': node === this.props.active
         })}
         onClick={this.onClickNode.bind(null, node)}
         onContextMenu={this.onContext.bind(null, node)}
@@ -103,14 +27,10 @@ class DialogueTree extends Component {
   }
 
   onClickNode = (node) => {
-    this.setState({
-      active: node
-    });
+    this.props.setTreeActiveAction(node);
 
-    if (node.isEntry) {
-      console.log("Entry!");
-    } else {
-      console.log("Not entry!");
+    if (node.entry !== undefined) {
+      this.props.setActiveEntryAction(node.entry);
     }
   };
 
@@ -135,10 +55,13 @@ class DialogueTree extends Component {
 
 const mapStateToProps = state => ({
   tree: state.treeReducer.tree,
+  active: state.treeReducer.active,
 });
 
 const mapDispatchToProps = {
   modifyTreeAction,
-}
+  setTreeActiveAction,
+  setActiveEntryAction,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(DialogueTree);
