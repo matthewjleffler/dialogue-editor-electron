@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { modifyTreeAction, setTreeActiveAction } from './actions/treeAction'
-import { setActiveEntryRegionAction, setAvailableRegionAction } from './actions/entryActions';
+import { actionTreeModify, actionTreeSetActive } from './actions/treeAction'
+import { actionEntrySetRegion, actionEntrySetRegionList } from './actions/entryActions';
 import './App.css';
 import StatusBar from './components/StatusBar/StatusBar';
 import DialogueTree from './components/DialogueTree/DialogueTree';
@@ -43,10 +43,10 @@ class App extends Component {
       regions.push(loadedRegions._text);
     }
 
-    this.props.modifyTreeAction(tree);
-    this.props.setTreeActiveAction(null);
-    this.props.setAvailableRegionAction(regions);
-    this.props.setActiveEntryRegionAction(data.msg.data.info.activeregion._text);
+    this.props.actionTreeModify(tree);
+    this.props.actionTreeSetActive(null);
+    this.props.actionEntrySetRegionList(regions);
+    this.props.actionEntrySetRegion(data.msg.data.info.activeregion._text);
 
     this.treeData = data; // No need to trigger state change when this is modified
   }
@@ -111,10 +111,10 @@ class App extends Component {
 }
 
 const mapDispatchToProps = {
-  modifyTreeAction,
-  setTreeActiveAction,
-  setActiveEntryRegionAction,
-  setAvailableRegionAction,
+  actionTreeModify,
+  actionTreeSetActive,
+  actionEntrySetRegion,
+  actionEntrySetRegionList,
 };
 
 export default connect(null, mapDispatchToProps)(App);

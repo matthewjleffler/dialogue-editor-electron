@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import * as constants from '../../constants';
 import { connect } from 'react-redux';
 import './DialoguePages.css';
 import Page from './Page';
@@ -15,32 +16,12 @@ class DialoguePages extends Component {
     )
   }
 
-  findRegion(entry, region) {
-    if (entry.region !== undefined) {
-      if (Array.isArray(entry.region)) {
-        let result = null;
-        entry.region.forEach((entryRegion) => {
-          if (entryRegion._attributes.id === region) {
-            result = entryRegion;
-          }
-        });
-        if (result !== null) {
-          return result;
-        }
-      } else if (entry.region._attributes.id === region) {
-        return entry.region;
-      }
-    }
-    return null;
-  }
-
   render() {
     const pages = [];
 
     if (this.props.entry !== null) {
-      // TODO check region
       let index = 0;
-      const region = this.findRegion(this.props.entry, 'en');
+      const region = constants.getRegionFromEntry(this.props.entry, this.props.region);
       if (region !== undefined) {
         if (Array.isArray(region.page)) {
           region.page.forEach((page) => {
@@ -67,6 +48,7 @@ class DialoguePages extends Component {
 
 const mapStateToProps = state => ({
   entry: state.entryReducer.entry,
+  region: state.entryReducer.region,
 });
 
 export default connect(mapStateToProps)(DialoguePages);

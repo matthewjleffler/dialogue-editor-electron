@@ -1,22 +1,22 @@
 import * as constants from '../constants';
 
-export const setActiveEntryAction = (entry) => dispatch => {
+export const actionEntrySetActive = (entry) => dispatch => {
   dispatch({
-    type: constants.ACTION_SET_ACTIVE_ENTRY,
+    type: constants.ACTION_ENTRY_SET_ACTIVE,
     payload: entry,
   });
 }
 
-export const setActiveEntryRegionAction = (region) => dispatch => {
+export const actionEntrySetRegion = (region) => dispatch => {
   dispatch({
-    type: constants.ACTION_SET_ACTIVE_REGION,
+    type: constants.ACTION_ENTRY_SET_REGION,
     payload: region,
   });
 }
 
-export const setAvailableRegionAction = (regions) => dispatch => {
+export const actionEntrySetRegionList = (regions) => dispatch => {
   dispatch({
-    type: constants.ACTION_SET_AVAILABLE_REGIONS,
+    type: constants.ACTION_ENTRY_SET_REGION_LIST,
     payload: regions,
   });
 }

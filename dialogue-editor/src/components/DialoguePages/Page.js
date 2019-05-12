@@ -38,7 +38,6 @@ class Page extends Component {
   render() {
     return (
       // TODO max rows
-      // TODO render newlines and save them back
       <div className="Page">
         <div className="Status">
           <label className="Page">{'Page ' + (this.props.index + 1)}</label>

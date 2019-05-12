@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { actionEntrySetRegion, actionEntrySetRegionList } from '../../actions/entryActions';
 import './StatusBar.css';
 import '../DialogueTree/DialogueTree.css';
 import '../DialoguePages/DialoguePages.css';
@@ -9,15 +10,16 @@ class StatusBar extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      regionValue: 'en',
-    };
-
     this.onChange = this.onChange.bind(this);
   }
 
   onChange(event) {
-    console.log("Region Changed");
+    const value = event.target.value;
+    if (value === 'new') {
+      // TODO handle new
+    } else {
+      this.props.actionEntrySetRegion(value);
+    }
   }
 
   render() {
@@ -26,6 +28,15 @@ class StatusBar extends Component {
       entryTitle = "Entry: " + this.props.entry._attributes.id;
     }
 
+    const allOptions = [];
+    this.props.regionList.forEach((region) => {
+      allOptions.push((
+        <option key={'region_' + region} value={region}>{region}</option>
+      ));
+    });
+    allOptions.push(<option key={'region_sep'} disabled>_________</option>);
+    allOptions.push(<option key={'region_new'} value='new'>{'New Region'}</option>);
+
     return (
       <div className="StatusBar">
         <div className="TreeContainer">
@@ -33,12 +44,10 @@ class StatusBar extends Component {
             <label>
               Region:
               <select
-                value={this.state.regionValue}
+                value={this.props.region}
                 onChange={this.onChange}
               >
-                <option value='en'>{'en'}</option>
-                <option disabled>_________</option>
-                <option value='new'>{'New Region'}</option>
+                {allOptions}
               </select>
             </label>
           </form>
@@ -55,6 +64,13 @@ class StatusBar extends Component {
 
 const mapStateToProps = state => ({
   entry: state.entryReducer.entry,
+  region: state.entryReducer.region,
+  regionList: state.entryReducer.regionList,
 });
 
-export default connect(mapStateToProps)(StatusBar);
+const mapDispatchToProps = {
+  actionEntrySetRegion,
+  actionEntrySetRegionList,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(StatusBar);

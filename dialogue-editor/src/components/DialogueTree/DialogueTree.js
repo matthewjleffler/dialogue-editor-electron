@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import * as constants from '../../constants';
 import { connect } from 'react-redux';
-import { modifyTreeAction, setTreeActiveAction } from '../../actions/treeAction';
-import { setActiveEntryAction } from '../../actions/entryActions';
+import { actionTreeModify, actionTreeSetActive } from '../../actions/treeAction';
+import { actionEntrySetActive } from '../../actions/entryActions';
 import '../../../node_modules/react-ui-tree/dist/react-ui-tree.css';
 import './DialogueTree.css';
 import cx from 'classnames'
@@ -13,10 +13,18 @@ class DialogueTree extends Component {
     const { entry } = node;
     let type = null;
     let pages = null;
+    // If this is an entry, fill out the necessary content
     if (entry !== undefined) {
-      // TODO region and pages
-      // let numPages = 0;
-      // if (Array.isArray(entry.))
+      // TODO color
+      // Find the number of pages for this region
+      const region = constants.getRegionFromEntry(entry, this.props.region);
+      let numPages = 0;
+      if (Array.isArray(region.page)) {
+        numPages = region.page.length;
+      } else {
+        numPages = 1;
+      }
+      // Find the type for this region
       type = (
         <div className="type">
           {constants.ENTRY_TYPE[entry._attributes.type]}
@@ -24,7 +32,7 @@ class DialogueTree extends Component {
       );
       pages = (
         <div className="pages">
-          2
+          {numPages}
         </div>
       )
     }
@@ -52,15 +60,15 @@ class DialogueTree extends Component {
   }
 
   onClickNode = (node) => {
-    this.props.setTreeActiveAction(node);
+    this.props.actionTreeSetActive(node);
 
     if (node.entry !== undefined) {
-      this.props.setActiveEntryAction(node.entry);
+      this.props.actionEntrySetActive(node.entry);
     }
   };
 
   handleChange = tree => {
-    this.props.modifyTreeAction(tree);
+    this.props.actionTreeModify(tree);
   };
 
   render() {
@@ -81,12 +89,13 @@ class DialogueTree extends Component {
 const mapStateToProps = state => ({
   tree: state.treeReducer.tree,
   active: state.treeReducer.active,
+  region: state.entryReducer.region,
 });
 
 const mapDispatchToProps = {
-  modifyTreeAction,
-  setTreeActiveAction,
-  setActiveEntryAction,
+  actionTreeModify,
+  actionTreeSetActive,
+  actionEntrySetActive,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DialogueTree);

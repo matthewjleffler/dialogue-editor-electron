@@ -1,15 +1,15 @@
 import * as constants from '../constants';
 
-export const modifyTreeAction = (tree) => dispatch => {
+export const actionTreeModify = (tree) => dispatch => {
   dispatch({
-    type: constants.ACTION_MODIFY_TREE,
+    type: constants.ACTION_TREE_MODIFY,
     payload: tree,
   });
 }
 
-export const setTreeActiveAction = (active) => dispatch => {
+export const actionTreeSetActive = (active) => dispatch => {
   dispatch({
-    type: constants.ACTION_SET_ACTIVE_TREE_NODE,
+    type: constants.ACTION_TREE_SET_ACTIVE,
     payload: active,
   });
 }

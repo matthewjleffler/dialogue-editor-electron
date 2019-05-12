@@ -7,12 +7,12 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case constants.ACTION_MODIFY_TREE:
+    case constants.ACTION_TREE_MODIFY:
       return {
         ...state,
         tree: action.payload,
       };
-    case constants.ACTION_SET_ACTIVE_TREE_NODE:
+    case constants.ACTION_TREE_SET_ACTIVE:
       return {
         ...state,
         active: action.payload,
