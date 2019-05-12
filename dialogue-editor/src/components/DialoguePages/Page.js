@@ -5,8 +5,9 @@ class Page extends Component {
   constructor(props) {
     super(props);
 
+    let stringData = this.getPageData(props).split('\\n').join('\n');
     this.state = {
-      value: this.getPageData(props),
+      value: stringData,
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -50,6 +51,7 @@ class Page extends Component {
               maxLength={37*7}
               value={this.state.value}
               onChange={this.handleChange}
+              spellCheck={true}
             />
           </form>
         </div>

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import * as constants from '../../constants';
 import { connect } from 'react-redux';
 import { modifyTreeAction, setTreeActiveAction } from '../../actions/treeAction';
 import { setActiveEntryAction } from '../../actions/entryActions';
@@ -9,6 +10,24 @@ import Tree from 'react-ui-tree';
 
 class DialogueTree extends Component {
   renderNode = node => {
+    const { entry } = node;
+    let type = null;
+    let pages = null;
+    if (entry !== undefined) {
+      // TODO region and pages
+      // let numPages = 0;
+      // if (Array.isArray(entry.))
+      type = (
+        <div className="type">
+          {constants.ENTRY_TYPE[entry._attributes.type]}
+        </div>
+      );
+      pages = (
+        <div className="pages">
+          2
+        </div>
+      )
+    }
     return (
       <span
         className={cx('node', {
@@ -17,7 +36,13 @@ class DialogueTree extends Component {
         onClick={this.onClickNode.bind(null, node)}
         onContextMenu={this.onContext.bind(null, node)}
       >
-        {node.module}
+        <div className="row">
+          <div className="title">
+            {node.module}
+          </div>
+          {type}
+          {pages}
+        </div>
       </span>
     );
   };

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import * as constants from '../../constants';
 import './DialogueOptions.css';
 
 class DialogueColor extends Component {
@@ -6,7 +7,7 @@ class DialogueColor extends Component {
     super(props);
 
     this.state = {
-      checkedOption: "DEFAULT",
+      checkedOption: constants.highlightColorToString(constants.HIGLIGHT_COLOR.DEFAULT),
     };
 
     this.createRadioButton = this.createRadioButton.bind(this);
@@ -42,13 +43,9 @@ class DialogueColor extends Component {
   render() {
     const radioButtons = [];
 
-    radioButtons.push(this.createRadioButton("DEFAULT", "transparent"));
-    radioButtons.push(this.createRadioButton("RED", "#ff8080"));
-    radioButtons.push(this.createRadioButton("GREEN", "#63ff53"));
-    radioButtons.push(this.createRadioButton("BLUE", "#8d9dff"));
-    radioButtons.push(this.createRadioButton("YELLOW", "#fff94e"));
-    radioButtons.push(this.createRadioButton("ORANGE", "#ff954e"));
-    radioButtons.push(this.createRadioButton("BROWN", "#c98151"));
+    Object.keys(constants.HIGLIGHT_COLOR).forEach((key) => {
+      radioButtons.push(this.createRadioButton(key, constants.HIGLIGHT_COLOR[key]));
+    });
 
     return (
       <div className="DialogueColor">

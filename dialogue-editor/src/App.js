@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { modifyTreeAction, setTreeActiveAction } from './actions/treeAction'
+import { setActiveEntryRegionAction, setAvailableRegionAction } from './actions/entryActions';
 import './App.css';
 import StatusBar from './components/StatusBar/StatusBar';
 import DialogueTree from './components/DialogueTree/DialogueTree';
@@ -32,8 +33,20 @@ class App extends Component {
     };
     this.buildTreeRecursive(data.msg.data.group, tree, false);
 
+    const regions = [];
+    const loadedRegions = data.msg.data.info.regions.region;
+    if (Array.isArray(loadedRegions)) {
+      loadedRegions.forEach((parsedRegion) => {
+        regions.push(parsedRegion._text);
+      });
+    } else {
+      regions.push(loadedRegions._text);
+    }
+
     this.props.modifyTreeAction(tree);
     this.props.setTreeActiveAction(null);
+    this.props.setAvailableRegionAction(regions);
+    this.props.setActiveEntryRegionAction(data.msg.data.info.activeregion._text);
 
     this.treeData = data; // No need to trigger state change when this is modified
   }
@@ -100,6 +113,8 @@ class App extends Component {
 const mapDispatchToProps = {
   modifyTreeAction,
   setTreeActiveAction,
+  setActiveEntryRegionAction,
+  setAvailableRegionAction,
 };
 
 export default connect(null, mapDispatchToProps)(App);

@@ -1,3 +1,4 @@
+import * as constants from '../constants';
 
 const initialState = {
   tree: { module: "Content" },
@@ -6,12 +7,12 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case 'MODIFY_TREE':
+    case constants.ACTION_MODIFY_TREE:
       return {
         ...state,
         tree: action.payload,
       };
-    case 'SET_ACTIVE':
+    case constants.ACTION_SET_ACTIVE_TREE_NODE:
       return {
         ...state,
         active: action.payload,

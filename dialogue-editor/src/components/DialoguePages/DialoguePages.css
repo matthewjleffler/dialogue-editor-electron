@@ -5,7 +5,7 @@
 }
 
 .DialoguePagesContainer.Scrolling {
-  overflow-y: scroll;
+  overflow-y: auto;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -23,20 +23,17 @@
 
 .Page {
   margin: 3px;
-  /* display: flex; */
   flex-direction: column;
   width: 340px;
 }
 
 .Page .View {
-  /* flex: 1; */
   background-color: #383c44;
   display: flex;
 }
 
 .Page .ViewForm {
   box-sizing: border-box;
-  /* flex: 1; */
 }
 
 .Page .ViewTextArea {

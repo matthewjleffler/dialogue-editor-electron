@@ -5,7 +5,8 @@
 }
 
 .TreeContainer.Scrolling {
-  overflow-y: scroll;
+  overflow-y: auto;
+  overflow-x: auto;
   background-color: #383c44;
 }
 
@@ -25,9 +26,31 @@
 .m-node .node {
   display: inline-block;
   width: 100%;
-  padding: 4px 5px;
+  padding: 4px 4px 4px 0px;
 }
 
 .m-node .node.is-active {
   background-color: #31363F;
+}
+
+.m-node .node .row {
+  display: flex;
+  flex-direction: row;
+}
+
+.m-node .node .row .title {
+  flex: 1;
+  flex-shrink: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.m-node .node .row .type {
+  width: 60px;
+  flex: initial;
+}
+
+.m-node .node .row .pages {
+  width: 20px;
+  flex: initial;
 }
