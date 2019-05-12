@@ -20,3 +20,17 @@ export const actionEntrySetRegionList = (regions) => dispatch => {
     payload: regions,
   });
 }
+
+export const actionEntrySetType = (type) => dispatch => {
+  dispatch({
+    type: constants.ACTION_ENTRY_SET_TYPE,
+    payload: type,
+  });
+}
+
+export const actionEntrySetColor = (color) => dispatch => {
+  dispatch({
+    type: constants.ACTION_ENTRY_SET_COLOR,
+    payload: color,
+  });
+}

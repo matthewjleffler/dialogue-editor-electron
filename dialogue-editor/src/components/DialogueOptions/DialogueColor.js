@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { actionEntrySetColor } from '../../actions/entryActions';
 import * as constants from '../../constants';
 import './DialogueOptions.css';
 
 class DialogueColor extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      checkedOption: constants.highlightColorToString(constants.HIGLIGHT_COLOR.DEFAULT),
-    };
 
     this.createRadioButton = this.createRadioButton.bind(this);
     this.handleRadioChange = this.handleRadioChange.bind(this);
@@ -26,7 +24,7 @@ class DialogueColor extends Component {
           type="radio"
           name="react-tips"
           value={value}
-          checked={this.state.checkedOption === value}
+          checked={this.props.color === value}
           className="form-check-input"
           onChange={this.handleRadioChange}
         />
@@ -35,9 +33,7 @@ class DialogueColor extends Component {
   }
 
   handleRadioChange(event) {
-    this.setState({
-      checkedOption: event.target.value,
-    });
+    this.props.actionEntrySetColor(event.target.value);
   }
 
   render() {
@@ -60,4 +56,12 @@ class DialogueColor extends Component {
   }
 }
 
-export default DialogueColor;
+const mapStateToProps = state => ({
+  color: state.entryReducer.color,
+});
+
+const mapDispatchToProps = {
+  actionEntrySetColor,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DialogueColor);

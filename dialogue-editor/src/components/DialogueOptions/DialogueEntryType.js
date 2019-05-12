@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { actionEntrySetType } from '../../actions/entryActions';
 import * as constants from "../../constants";
 import './DialogueOptions.css';
 
 class DialogueEntryType extends Component {
   constructor(props) {
     super(props);
-    
-    this.state = {
-      checkedOption: constants.entryTypeToString(constants.ENTRY_TYPE.NONE),
-    };
 
     this.createRadioButton = this.createRadioButton.bind(this);
     this.handleRadioChange = this.handleRadioChange.bind(this);
@@ -26,7 +24,7 @@ class DialogueEntryType extends Component {
             type="radio"
             name="react-tips"
             value={value}
-            checked={this.state.checkedOption === value}
+            checked={this.props.type === value}
             className="form-check-input"
             onChange={this.handleRadioChange}
           />
@@ -37,9 +35,7 @@ class DialogueEntryType extends Component {
   }
 
   handleRadioChange(event) {
-    this.setState({
-      checkedOption: event.target.value,
-    });
+    this.props.actionEntrySetType(event.target.value);
   }
 
   render() {
@@ -62,4 +58,12 @@ class DialogueEntryType extends Component {
   }
 }
 
-export default DialogueEntryType;
+const mapStateToProps = state => ({
+  type: state.entryReducer.type,
+});
+
+const mapDispatchToProps = {
+  actionEntrySetType,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DialogueEntryType);
