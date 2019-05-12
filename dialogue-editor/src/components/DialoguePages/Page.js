@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import * as constants from '../../constants';
 import './DialoguePages.css';
 
 class Page extends Component {
@@ -19,12 +20,13 @@ class Page extends Component {
     if (props.region === undefined) {
       return "";
     }
-    if (Array.isArray(props.region.page)) {
-      // Get the right page from the array
-      return props.region.page[props.index]._cdata;
+    const pages = constants.getArrayProperty(props.region.page);
+    const page = pages[props.index];
+    if (page !== undefined) {
+      return page._cdata;
+    } else {
+      return "";
     }
-    // We are a single page, return that data
-    return props.region.page._cdata;
   }
 
   handleChange(event) {

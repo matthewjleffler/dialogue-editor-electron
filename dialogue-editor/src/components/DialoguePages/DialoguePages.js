@@ -23,12 +23,11 @@ class DialoguePages extends Component {
       let index = 0;
       const region = constants.getRegionFromEntry(this.props.entry, this.props.region);
       if (region !== undefined) {
-        if (Array.isArray(region.page)) {
-          region.page.forEach((page) => {
+        const regionPages = constants.getArrayProperty(region.page);
+        if (regionPages !== undefined) {
+          regionPages.forEach((page) => {
             pages.push(this.createPage(this.props.entry, index++, region));
           });
-        } else {
-          pages.push(this.createPage(this.props.entry, index++, region));
         }
       }
       

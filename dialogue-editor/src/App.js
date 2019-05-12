@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { actionTreeModify, actionTreeSetActive } from './actions/treeAction'
 import { actionEntrySetRegion, actionEntrySetRegionList } from './actions/entryActions';
+import * as constants from './constants';
 import './App.css';
 import StatusBar from './components/StatusBar/StatusBar';
 import DialogueTree from './components/DialogueTree/DialogueTree';
@@ -34,14 +35,10 @@ class App extends Component {
     this.buildTreeRecursive(data.msg.data.group, tree, false);
 
     const regions = [];
-    const loadedRegions = data.msg.data.info.regions.region;
-    if (Array.isArray(loadedRegions)) {
-      loadedRegions.forEach((parsedRegion) => {
-        regions.push(parsedRegion._text);
-      });
-    } else {
-      regions.push(loadedRegions._text);
-    }
+    const loadedRegions = constants.getArrayProperty(data.msg.data.info.regions.region);
+    loadedRegions.forEach((parsedRegion) => {
+      regions.push(parsedRegion._text);
+    });
 
     this.props.actionTreeModify(tree);
     this.props.actionTreeSetActive(null);
@@ -64,25 +61,19 @@ class App extends Component {
     }
 
     // Step through and create groups
-    if (treeNode.group !== undefined) {
-      if (Array.isArray(treeNode.group)) {
-        treeNode.group.forEach( (group) => {
-          this.buildTreeRecursive(group, newParent);
-        });
-      } else {
-        this.buildTreeRecursive(treeNode.group, newParent);
-      }
+    const treeGroups = constants.getArrayProperty(treeNode.group);
+    if (treeGroups !== null) {
+      treeGroups.forEach( (group) => {
+        this.buildTreeRecursive(group, newParent);
+      });
     }
 
     // Create entries
-    if (treeNode.entry !== undefined) {
-      if (Array.isArray(treeNode.entry)) {
-        treeNode.entry.forEach( (entry) => {
-          this.addEntry(entry, newParent);
-        });
-      } else {
-        this.addEntry(treeNode.entry, newParent);
-      }
+    const treeEntries = constants.getArrayProperty(treeNode.entry);
+    if (treeEntries !== null) {
+      treeEntries.forEach((entry) => {
+        this.addEntry(entry, newParent);
+      });
     }
   }
 

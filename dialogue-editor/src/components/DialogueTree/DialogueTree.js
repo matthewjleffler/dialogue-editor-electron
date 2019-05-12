@@ -16,14 +16,17 @@ class DialogueTree extends Component {
     // If this is an entry, fill out the necessary content
     if (entry !== undefined) {
       // TODO color
+      
       // Find the number of pages for this region
       const region = constants.getRegionFromEntry(entry, this.props.region);
       let numPages = 0;
-      if (Array.isArray(region.page)) {
-        numPages = region.page.length;
-      } else {
-        numPages = 1;
+      if (region !== undefined) {
+        const regionPages = constants.getArrayProperty(region.page);
+        if (regionPages !== undefined) {
+          numPages = regionPages.length;
+        }
       }
+
       // Find the type for this region
       type = (
         <div className="type">
