@@ -8,7 +8,6 @@ export const ACTION_ENTRY_SET_TYPE            = 'ACTION_ENTRY_SET_TYPE';
 export const ACTION_ENTRY_SET_COLOR           = 'ACTION_ENTRY_SET_COLOR';
 
 // Tree actions
-export const ACTION_TREE_MODIFY               = 'ACTION_TREE_MODIFY';
 export const ACTION_TREE_SET_ACTIVE           = 'ACTION_TREE_SET_ACTIVE';
 
 // TODO doc
@@ -49,17 +48,18 @@ export function highlightColorToString(value) {
 }
 
 // TODO doc
-export function getRegionFromEntry(entry, region) {
-  const entries = getArrayProperty(entry.region);
-  if (entries === null) {
+export function getRegionFromEntry(entry, regionId) {
+  const regionList = entry.region;
+  if (regionList === null) {
     return null;
   }
-  for (let i = 0; i < entries.length; i++) {
-    const entry = entries[i];
-    if (entry._attributes.id === region) {
-      return entry;
+  for (let i = 0; i < regionList.length; i++) {
+    const region = regionList[i];
+    if (region.id === regionId) {
+      return region;
     }
   }
+  return null;
 }
 
 // TODO doc

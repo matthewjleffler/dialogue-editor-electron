@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { actionTreeModify, actionTreeSetActive } from './actions/treeAction'
+import { actionTreeSetActive } from './actions/treeAction'
 import { actionEntrySetRegion, actionEntrySetRegionList } from './actions/entryActions';
 import * as constants from './constants';
 import './App.css';
@@ -14,7 +14,22 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.treeData = null;
+    this.state = {
+      data: {
+        info: {
+          version: "1.0",
+          activeregion: "en",
+          regions: ["en"],
+          name: "translation",
+        },
+        group: [{
+          id: "Content",
+          mod: "f",
+          group: [],
+          entry: [],
+        }],
+      }
+    };
   }
   
   componentDidMount() {
@@ -90,20 +105,12 @@ class App extends Component {
   }
 
   onTreeDataChanged = (event, data) => {
-    const tree = { 
-      module: 'Content',
-      children: [],
-      isEntry: false,
-      collapsed:  false,
-    };
-    this.buildTreeRecursive(data.msg.data.group, tree, false);
-
     const parsedRegions = [];
     constants.getArrayProperty(data.msg.data.info.regions.region).forEach((parsedRegion) => {
       parsedRegions.push(parsedRegion._text);
     });
 
-    const constructedTree = {
+    const loadedData = {
       info: {
         version: data.msg.data.info.version._text,
         activeregion: data.msg.data.info.activeregion._text,
@@ -112,60 +119,15 @@ class App extends Component {
       },
       group: [],
     };
-    this.buildParsedGroupsRecursive(constructedTree.group, constants.getArrayProperty(data.msg.data.group));
 
-    console.log(constructedTree);
-
-    const regions = [];
-    const loadedRegions = constants.getArrayProperty(data.msg.data.info.regions.region);
-    loadedRegions.forEach((parsedRegion) => {
-      regions.push(parsedRegion._text);
+    this.buildParsedGroupsRecursive(loadedData.group, constants.getArrayProperty(data.msg.data.group));
+    this.setState({
+      data: loadedData,
     });
 
-    this.props.actionTreeModify(tree);
     this.props.actionTreeSetActive(null);
-    this.props.actionEntrySetRegionList(regions);
-    this.props.actionEntrySetRegion(data.msg.data.info.activeregion._text);
-
-    this.treeData = data; // No need to trigger state change when this is modified
-  }
-
-  buildTreeRecursive(treeNode, parent, createNode = true) {
-    let newParent = parent;
-    if (createNode) {
-      newParent = {
-        module: treeNode._attributes.id,
-        children: [],
-        entry: undefined,
-        collapsed: true,
-      }
-      parent.children.push(newParent);
-    }
-
-    // Step through and create groups
-    const treeGroups = constants.getArrayProperty(treeNode.group);
-    if (treeGroups !== null) {
-      treeGroups.forEach( (group) => {
-        this.buildTreeRecursive(group, newParent);
-      });
-    }
-
-    // Create entries
-    const treeEntries = constants.getArrayProperty(treeNode.entry);
-    if (treeEntries !== null) {
-      treeEntries.forEach((entry) => {
-        this.addEntry(entry, newParent);
-      });
-    }
-  }
-
-  addEntry(entry, parent) {
-    const newEntry = {
-      module: entry._attributes.id,
-      entry: entry,
-      leaf: true,
-    }
-    parent.children.push(newEntry);
+    this.props.actionEntrySetRegionList(loadedData.info.regions);
+    this.props.actionEntrySetRegion(loadedData.info.activeregion);
   }
 
   render() {
@@ -174,7 +136,7 @@ class App extends Component {
         <header className="Header"/>
         <StatusBar />
         <div className="DialogueContainer">
-          <DialogueTree />
+          <DialogueTree tree={this.state.data} />
           <DialoguePages />
           <DialogueOptions />
         </div>
@@ -184,7 +146,6 @@ class App extends Component {
 }
 
 const mapDispatchToProps = {
-  actionTreeModify,
   actionTreeSetActive,
   actionEntrySetRegion,
   actionEntrySetRegionList,

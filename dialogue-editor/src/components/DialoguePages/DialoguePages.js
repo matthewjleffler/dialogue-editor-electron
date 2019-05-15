@@ -9,7 +9,7 @@ class DialoguePages extends Component {
   createPage(entry, index, region) {
     return (
       <Page
-        key={entry._attributes.id + '_page_' + index}
+        key={entry.id + '_page_' + index}
         index={index}
         region={region}
       />

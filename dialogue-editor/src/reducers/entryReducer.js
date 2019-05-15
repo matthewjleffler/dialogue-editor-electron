@@ -14,8 +14,8 @@ export default (state = initialState, action) => {
       return {
         ...state,
         entry: action.payload,
-        type: action.payload._attributes.type,
-        color: action.payload._attributes.color,
+        type: action.payload.type,
+        color: action.payload.color,
       };
     case constants.ACTION_ENTRY_SET_REGION:
       return {

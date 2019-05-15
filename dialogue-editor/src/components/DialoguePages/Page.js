@@ -23,7 +23,7 @@ class Page extends Component {
     const pages = constants.getArrayProperty(props.region.page);
     const page = pages[props.index];
     if (page !== undefined) {
-      return page._cdata;
+      return page.text;
     } else {
       return "";
     }
