@@ -72,3 +72,14 @@ export function getArrayProperty(property) {
   }
   return [property];
 }
+
+// TODO doc
+export function arrayRemove(array, value) {
+  if (!array || array.length < 1) {
+    return;
+  }
+  let index;
+  while ((index = array.indexOf(value)) > -1) {
+    array.splice(index, 1);
+  }
+}

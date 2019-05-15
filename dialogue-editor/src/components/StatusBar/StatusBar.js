@@ -24,9 +24,14 @@ class StatusBar extends Component {
 
   render() {
     let entryTitle = "No Entry Selected";
-    // TODO qualify the ids
     if (this.props.entry !== null) {
-      entryTitle = "Entry: " + this.props.entry.id;
+      let entry = this.props.entry;
+      let stringId = entry.id;
+      while (entry.parent && entry.parent.id !== "Content") {
+        entry = entry.parent;
+        stringId = entry.id + "." + stringId;
+      }
+      entryTitle = "Entry: " + stringId;
     }
 
     const allOptions = [];

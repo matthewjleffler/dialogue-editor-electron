@@ -40,7 +40,33 @@ class App extends Component {
     ipcRenderer.removeListener('tree_change', this.onTreeDataChanged);
   }
 
-  buildParsedGroupsRecursive(groupArray, parsedGroup) {
+  onTreeDataChanged = (event, data) => {
+    const parsedRegions = [];
+    constants.getArrayProperty(data.msg.data.info.regions.region).forEach((parsedRegion) => {
+      parsedRegions.push(parsedRegion._text);
+    });
+
+    const loadedData = {
+      info: {
+        version: data.msg.data.info.version._text,
+        activeregion: data.msg.data.info.activeregion._text,
+        regions: parsedRegions,
+        name: data.msg.data.info.name._text,
+      },
+      group: [],
+    };
+
+    this.buildParsedGroupsRecursive(loadedData, constants.getArrayProperty(data.msg.data.group));
+    this.setState({
+      data: loadedData,
+    });
+
+    this.props.actionTreeSetActive(null);
+    this.props.actionEntrySetRegionList(loadedData.info.regions);
+    this.props.actionEntrySetRegion(loadedData.info.activeregion);
+  }
+
+  buildParsedGroupsRecursive(parent, parsedGroup) {
     if (parsedGroup === null) {
       // Nothing in the parent group
       return;
@@ -51,14 +77,15 @@ class App extends Component {
         mod: group._attributes.mod,
         group: [],
         entry: [],
+        parent: parent,
       };
-      groupArray.push(newGroup);
-      this.buildParsedEntry(newGroup.entry, constants.getArrayProperty(group.entry));
-      this.buildParsedGroupsRecursive(newGroup.group, constants.getArrayProperty(group.group));
+      parent.group.push(newGroup);
+      this.buildParsedEntry(newGroup, constants.getArrayProperty(group.entry));
+      this.buildParsedGroupsRecursive(newGroup, constants.getArrayProperty(group.group));
     });
   }
 
-  buildParsedEntry(entryArray, parsedEntry) {
+  buildParsedEntry(parent, parsedEntry) {
     if (parsedEntry === null) {
       // No entries in this group
       return;
@@ -70,8 +97,9 @@ class App extends Component {
         color: entry._attributes.color,
         mod: entry._attributes.mod,
         region: [],
+        parent: parent,
       };
-      entryArray.push(newEntry);
+      parent.entry.push(newEntry);
       this.buildParsedRegion(newEntry.region, constants.getArrayProperty(entry.region));
     });
   }
@@ -102,32 +130,6 @@ class App extends Component {
       };
       pageArray.push(newPage);
     });
-  }
-
-  onTreeDataChanged = (event, data) => {
-    const parsedRegions = [];
-    constants.getArrayProperty(data.msg.data.info.regions.region).forEach((parsedRegion) => {
-      parsedRegions.push(parsedRegion._text);
-    });
-
-    const loadedData = {
-      info: {
-        version: data.msg.data.info.version._text,
-        activeregion: data.msg.data.info.activeregion._text,
-        regions: parsedRegions,
-        name: data.msg.data.info.name._text,
-      },
-      group: [],
-    };
-
-    this.buildParsedGroupsRecursive(loadedData.group, constants.getArrayProperty(data.msg.data.group));
-    this.setState({
-      data: loadedData,
-    });
-
-    this.props.actionTreeSetActive(null);
-    this.props.actionEntrySetRegionList(loadedData.info.regions);
-    this.props.actionEntrySetRegion(loadedData.info.activeregion);
   }
 
   render() {
