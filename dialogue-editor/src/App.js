@@ -25,6 +25,70 @@ class App extends Component {
     ipcRenderer.removeListener('tree_change', this.onTreeDataChanged);
   }
 
+  buildParsedGroupsRecursive(groupArray, parsedGroup) {
+    if (parsedGroup === null) {
+      // Nothing in the parent group
+      return;
+    }
+    parsedGroup.forEach((group) => {
+      const newGroup = {
+        id: group._attributes.id,
+        mod: group._attributes.mod,
+        group: [],
+        entry: [],
+      };
+      groupArray.push(newGroup);
+      this.buildParsedEntry(newGroup.entry, constants.getArrayProperty(group.entry));
+      this.buildParsedGroupsRecursive(newGroup.group, constants.getArrayProperty(group.group));
+    });
+  }
+
+  buildParsedEntry(entryArray, parsedEntry) {
+    if (parsedEntry === null) {
+      // No entries in this group
+      return;
+    }
+    parsedEntry.forEach((entry) => {
+      const newEntry = {
+        id: entry._attributes.id,
+        type: entry._attributes.type,
+        color: entry._attributes.color,
+        mod: entry._attributes.mod,
+        region: [],
+      };
+      entryArray.push(newEntry);
+      this.buildParsedRegion(newEntry.region, constants.getArrayProperty(entry.region));
+    });
+  }
+
+  buildParsedRegion(regionArray, parsedRegion) {
+    if (parsedRegion === null) {
+      // No regions in this group
+      return;
+    }
+    parsedRegion.forEach((region) => {
+      const newRegion = {
+        id: region._attributes.id,
+        page: [],
+      };
+      regionArray.push(newRegion);
+      this.buildParsedPage(newRegion.page, constants.getArrayProperty(region.page));
+    });
+  }
+
+  buildParsedPage(pageArray, parsedPage) {
+    if (parsedPage === null) {
+      // No pages in this region
+      return;
+    }
+    parsedPage.forEach((page) => {
+      const newPage = {
+        text: page._cdata,
+      };
+      pageArray.push(newPage);
+    });
+  }
+
   onTreeDataChanged = (event, data) => {
     const tree = { 
       module: 'Content',
@@ -33,6 +97,24 @@ class App extends Component {
       collapsed:  false,
     };
     this.buildTreeRecursive(data.msg.data.group, tree, false);
+
+    const parsedRegions = [];
+    constants.getArrayProperty(data.msg.data.info.regions.region).forEach((parsedRegion) => {
+      parsedRegions.push(parsedRegion._text);
+    });
+
+    const constructedTree = {
+      info: {
+        version: data.msg.data.info.version._text,
+        activeregion: data.msg.data.info.activeregion._text,
+        regions: parsedRegions,
+        name: data.msg.data.info.name._text,
+      },
+      group: [],
+    };
+    this.buildParsedGroupsRecursive(constructedTree.group, constants.getArrayProperty(data.msg.data.group));
+
+    console.log(constructedTree);
 
     const regions = [];
     const loadedRegions = constants.getArrayProperty(data.msg.data.info.regions.region);
