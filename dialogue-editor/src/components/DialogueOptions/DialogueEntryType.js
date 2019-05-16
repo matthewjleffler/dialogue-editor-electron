@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { actionEntrySetType } from '../../actions/entryActions';
+import { actionEntrySetType, actionEntryRerender } from '../../actions/entryActions';
 import * as constants from "../../constants";
 import './DialogueOptions.css';
 
@@ -29,7 +29,10 @@ class DialogueEntryType extends Component {
   }
 
   handleRadioChange = (event) => {
-    this.props.actionEntrySetType(event.target.value);
+    const value = event.target.value;
+    this.props.entry.type = value;
+    this.props.actionEntrySetType(value);
+    this.props.actionEntryRerender();
   }
 
   render() {
@@ -53,11 +56,13 @@ class DialogueEntryType extends Component {
 }
 
 const mapStateToProps = state => ({
+  entry: state.entryReducer.entry,
   type: state.entryReducer.type,
 });
 
 const mapDispatchToProps = {
   actionEntrySetType,
+  actionEntryRerender,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DialogueEntryType);

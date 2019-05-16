@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { actionEntrySetColor } from '../../actions/entryActions';
+import { actionEntrySetColor, actionEntryRerender } from '../../actions/entryActions';
 import * as constants from '../../constants';
 import './DialogueOptions.css';
 
@@ -27,7 +27,10 @@ class DialogueColor extends Component {
   }
 
   handleRadioChange = (event) => {
-    this.props.actionEntrySetColor(event.target.value);
+    const value = event.target.value;
+    this.props.entry.color = value;
+    this.props.actionEntrySetColor(value);
+    this.props.actionEntryRerender();
   }
 
   render() {
@@ -51,11 +54,13 @@ class DialogueColor extends Component {
 }
 
 const mapStateToProps = state => ({
+  entry: state.entryReducer.entry,
   color: state.entryReducer.color,
 });
 
 const mapDispatchToProps = {
   actionEntrySetColor,
+  actionEntryRerender,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DialogueColor);

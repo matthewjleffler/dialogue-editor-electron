@@ -48,7 +48,6 @@ class Page extends Component {
     if (!window.confirm("Are you sure you want to delete this page?")) {
       return;
     }
-    // TODO CONFIRM
     this.props.deletePage(this.props.index);
   }
 

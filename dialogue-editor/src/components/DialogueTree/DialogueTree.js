@@ -58,9 +58,15 @@ class DialogueTree extends Component {
     const { entry } = node;
     let type = null;
     let pages = null;
+    const spanStyle = {};
+
     // If this is an entry, fill out the necessary content
     if (entry !== undefined) {
-      // TODO color
+      // Set line color
+      const color = entry.color;
+      if (color !== constants.HIGLIGHT_COLOR) {
+        spanStyle.backgroundColor = constants.HIGLIGHT_COLOR[color];
+      }
 
       let numPages = 0;
       // Find the number of pages for this region
@@ -85,6 +91,7 @@ class DialogueTree extends Component {
 
     return (
       <span
+        style={spanStyle}
         className={cx('node', {
           'is-active': node === this.props.active
         })}
@@ -149,8 +156,6 @@ class DialogueTree extends Component {
         }
       }
       this.checkTreeConsistencyRecursive(child);
-      
-      // TODO make tree respect this sort
       node.children.sort(this.sortChildren);
     }
   }
