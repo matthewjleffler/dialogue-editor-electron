@@ -1,4 +1,12 @@
-const { app, BrowserWindow, shell, ipcMain, Menu, TouchBar } = require('electron');
+const { 
+  app,
+  BrowserWindow,
+  shell,
+  ipcMain,
+  Menu,
+  MenuItem,
+  TouchBar,
+} = require('electron');
 const { TouchBarButton, TouchBarLabel, TouchBarSpacer } = TouchBar;
 
 const path = require('path');
@@ -82,14 +90,77 @@ function openFileAndRead() {
   });
 }
 
+function treeContextMenu() {
+  const menu = new Menu();
+
+  menu.append(new MenuItem({
+    label: "New Group",
+    click: () => {
+      mainWindow.webContents.send('context-tree-new-group');
+    }
+  }));
+  menu.append(new MenuItem({
+    label: "New Entry",
+    click: () => {
+      mainWindow.webContents.send('context-tree-new-entry');
+    }
+  }));
+  menu.append(new MenuItem({
+    label: "Duplicate Id",
+    click: () => {
+      mainWindow.webContents.send('context-tree-duplicate-id');
+    }
+  }));
+  menu.append(new MenuItem({
+    type: "separator",
+  }));
+  menu.append(new MenuItem({
+    label: "Rename",
+    click: () => {
+      mainWindow.webContents.send('context-tree-rename');
+    }
+  }));
+  menu.append(new MenuItem({
+    type: "separator",
+  }));
+  menu.append(new MenuItem({
+    label: "Delete",
+    click: () => {
+      mainWindow.webContents.send('context-tree-delete');
+    }
+  }));
+
+  menu.popup({});
+}
+
 function generateMenu() {
   const template = [
     {
       label: 'File',
       submenu: [
         {
-          click: openFileAndRead,
+          label: "New Project",
+        },
+        {
           label: "Open Project",
+          accelerator: "CmdOrCtrl+O",
+          click: openFileAndRead,
+        },
+        {
+          label: "Save Project",
+          accelerator: "CmdOrCtrl+S",
+        },
+        {
+          label: "Save Project As",
+        },
+        {
+          type: 'separator',
+        },
+        {
+          label: 'Import XML',
+        },
+        {
+          label: 'Export XML',
         },
         { type: 'separator' },
         { role: 'about' },
@@ -165,4 +236,8 @@ app.on('activate', () => {
 
 ipcMain.on('load-page', (event, arg) => {
   mainWindow.loadURL(arg);
+});
+
+ipcMain.on('open-context-right-click', (event, arg) => {
+  treeContextMenu();
 });

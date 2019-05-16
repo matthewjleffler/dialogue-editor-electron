@@ -7,14 +7,74 @@ import '../../../node_modules/react-ui-tree/dist/react-ui-tree.css';
 import './DialogueTree.css';
 import cx from 'classnames'
 import Tree from 'react-ui-tree';
+const { ipcRenderer } = window.require('electron');
 
 class DialogueTree extends Component {
   constructor(props) {
     super(props);
 
+    // This is set on right click and interacted with
+    this.contextNode = null;
+
     this.state = {
       tree: this.buildTree(props.tree),
     };
+  }
+
+  componentDidMount() {
+    ipcRenderer.on('context-tree-new-group', this.onNewGroup);
+    ipcRenderer.on('context-tree-new-entry', this.onNewEntry);
+    ipcRenderer.on('context-tree-duplicate-id', this.onDupliateId);
+    ipcRenderer.on('context-tree-rename', this.onRename);
+    ipcRenderer.on('context-tree-delete', this.onDelete);
+  }
+
+  componentWillUnmount() {
+    ipcRenderer.removeListener('context-tree-new-group', this.onNewGroup);
+    ipcRenderer.removeListener('context-tree-new-entry', this.onNewEntry);
+    ipcRenderer.removeListener('context-tree-duplicate-id', this.onDupliateId);
+    ipcRenderer.removeListener('context-tree-rename', this.onRename);
+    ipcRenderer.removeListener('context-tree-delete', this.onDelete);
+  }
+
+  onNewGroup = () => {
+    // Build new group and module representing that group
+    if (!this.contextNode.group) {
+      // We clicked an entry, can't create a group under an entry
+      return;
+    }
+    // TODO text entry
+    const newGroup = {
+      id: "Test",
+      mod: "f",
+      group: [],
+      entry: [],
+      parent: this.contextNode.group,
+    };
+    this.contextNode.group.group.push(newGroup);
+    this.contextNode.children.push({
+      module: newGroup.id,
+      parent: this.contextNode,
+      children: [],
+      group: newGroup,
+    });
+    this.props.actionEntryRerender();
+  }
+
+  onNewEntry() {
+    console.log("NEW ENTRY");
+  }
+
+  onDupliateId() {
+    console.log("DUPLICATE ID");
+  }
+
+  onRename() {
+    console.log("RENAME");
+  }
+
+  onDelete() {
+    console.log("DELETE");
   }
 
   buildTree(constructedTree) {
@@ -110,7 +170,8 @@ class DialogueTree extends Component {
   };
 
   onContext = (node) => {
-    console.log("Context Clicked " + node.module);
+    this.contextNode = node;
+    ipcRenderer.send('open-context-right-click');
   }
 
   onClickNode = (node) => {
