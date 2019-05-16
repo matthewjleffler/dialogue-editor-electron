@@ -1,33 +1,66 @@
 import React, { Component } from 'react';
 import * as constants from '../../constants';
 import { connect } from 'react-redux';
+import { actionEntrySetActive, actionEntryRerender } from '../../actions/entryActions';
 import './DialoguePages.css';
 import Page from './Page';
 
 class DialoguePages extends Component {
+  constructor(props) {
+    super(props);
+
+    this.region = constants.getRegionFromEntry(props.entry, props.regionId);
+
+    this.state = {
+      pageCount: (this.region ? this.region.page.length : 0),
+    };
+  }
+
+  updatePageCount = () => {
+    this.setState({
+      pageCount: (this.region ? this.region.page.length : 0),
+    });
+    this.props.actionEntryRerender();
+  }
 
   createPage(entry, index, region) {
     return (
       <Page
-        key={entry.id + '_page_' + index}
+        key={entry.id + '_page_' + index + '_' + this.state.pageCount}
         index={index}
         region={region}
+        pushNewPage={this.pushNewPage}
+        deletePage={this.deletePage}
       />
     )
+  }
+
+  pushNewPage = (index) => {
+    this.region.page.splice(index, 0, { text: "" });
+    this.updatePageCount();
+  }
+  
+  deletePage = (index) => {
+    this.region.page.splice(index, 1);
+    this.updatePageCount();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (  this.props.regionId !== prevProps.regionId ||
+          this.props.entry !== prevProps.entry) {
+      this.region = constants.getRegionFromEntry(this.props.entry, this.props.regionId);
+      this.updatePageCount();
+    }
   }
 
   render() {
     const pages = [];
 
     if (this.props.entry !== null) {
-      let index = 0;
-      const region = constants.getRegionFromEntry(this.props.entry, this.props.region);
-      if (region !== undefined) {
-        const regionPages = constants.getArrayProperty(region.page);
-        if (regionPages !== undefined) {
-          regionPages.forEach((page) => {
-            pages.push(this.createPage(this.props.entry, index++, region));
-          });
+      const region = constants.getRegionFromEntry(this.props.entry, this.props.regionId);
+      if (region) {
+        for (let i = 0; i < region.page.length; i++) {
+          pages.push(this.createPage(this.props.entry, i, region));
         }
       }
       
@@ -47,7 +80,12 @@ class DialoguePages extends Component {
 
 const mapStateToProps = state => ({
   entry: state.entryReducer.entry,
-  region: state.entryReducer.region,
+  regionId: state.entryReducer.region,
 });
 
-export default connect(mapStateToProps)(DialoguePages);
+const mapDispatchToProps = {
+  actionEntrySetActive,
+  actionEntryRerender,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DialoguePages);

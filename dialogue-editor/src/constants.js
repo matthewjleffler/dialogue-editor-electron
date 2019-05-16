@@ -6,6 +6,7 @@ export const ACTION_ENTRY_SET_REGION          = 'ACTION_ENTRY_SET_REGION';
 export const ACTION_ENTRY_SET_REGION_LIST     = 'ACTION_ENTRY_SET_REGION_LIST';
 export const ACTION_ENTRY_SET_TYPE            = 'ACTION_ENTRY_SET_TYPE';
 export const ACTION_ENTRY_SET_COLOR           = 'ACTION_ENTRY_SET_COLOR';
+export const ACTION_ENTRY_RERENDER            = 'ACTION_ENTRY_RERENDER';
 
 // Tree actions
 export const ACTION_TREE_SET_ACTIVE           = 'ACTION_TREE_SET_ACTIVE';
@@ -49,6 +50,9 @@ export function highlightColorToString(value) {
 
 // TODO doc
 export function getRegionFromEntry(entry, regionId) {
+  if (!entry) {
+    return null;
+  }
   const regionList = entry.region;
   if (regionList === null) {
     return null;

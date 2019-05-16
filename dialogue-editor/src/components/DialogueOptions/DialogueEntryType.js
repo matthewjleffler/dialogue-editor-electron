@@ -5,14 +5,8 @@ import * as constants from "../../constants";
 import './DialogueOptions.css';
 
 class DialogueEntryType extends Component {
-  constructor(props) {
-    super(props);
 
-    this.createRadioButton = this.createRadioButton.bind(this);
-    this.handleRadioChange = this.handleRadioChange.bind(this);
-  }
-
-  createRadioButton(value, name) {
+  createRadioButton = (value, name) => {
     return (
       // TODO CLICKABLE IN WHOLE ROW
       <div
@@ -34,7 +28,7 @@ class DialogueEntryType extends Component {
     );
   }
 
-  handleRadioChange(event) {
+  handleRadioChange = (event) => {
     this.props.actionEntrySetType(event.target.value);
   }
 

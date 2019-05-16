@@ -5,14 +5,8 @@ import * as constants from '../../constants';
 import './DialogueOptions.css';
 
 class DialogueColor extends Component {
-  constructor(props) {
-    super(props);
 
-    this.createRadioButton = this.createRadioButton.bind(this);
-    this.handleRadioChange = this.handleRadioChange.bind(this);
-  }
-
-  createRadioButton(value, color) {
+  createRadioButton = (value, color) => {
     return (
       // TODO CLICKABLE IN WHOLE ROW
       <div 
@@ -32,7 +26,7 @@ class DialogueColor extends Component {
     );
   }
 
-  handleRadioChange(event) {
+  handleRadioChange = (event) => {
     this.props.actionEntrySetColor(event.target.value);
   }
 

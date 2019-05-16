@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import * as constants from '../../constants';
 import './DialoguePages.css';
 
 class Page extends Component {
@@ -10,9 +9,6 @@ class Page extends Component {
     this.state = {
       value: stringData,
     }
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   getPageData(props) {
@@ -20,8 +16,7 @@ class Page extends Component {
     if (props.region === undefined) {
       return "";
     }
-    const pages = constants.getArrayProperty(props.region.page);
-    const page = pages[props.index];
+    const page = props.region.page[props.index];
     if (page !== undefined) {
       return page.text;
     } else {
@@ -29,12 +24,32 @@ class Page extends Component {
     }
   }
 
-  handleChange(event) {
-    this.setState({value: event.target.value});
+  handleChange = (event) => {
+    const visualText = event.target.value;
+    // Re-escape the text and update the data store
+    const escapedText = visualText.split('\n').join('\\n');
+    this.props.region.page[this.props.index].text = escapedText;
+    this.setState({value: visualText});
   }
 
-  handleSubmit(event) {
+  handleSubmit = (event) => {
     event.preventDefault();
+  }
+
+  onNewLeft = (event) => {
+    this.props.pushNewPage(this.props.index);
+  }
+
+  onNewRight = (event) => {
+    this.props.pushNewPage(this.props.index + 1);
+  }
+
+  onDelete = (event) => {
+    if (!window.confirm("Are you sure you want to delete this page?")) {
+      return;
+    }
+    // TODO CONFIRM
+    this.props.deletePage(this.props.index);
   }
 
   render() {
@@ -57,9 +72,9 @@ class Page extends Component {
           </form>
         </div>
         <div className="Controls">
-          <button>{'<+'}</button>
-          <button>{'X'}</button>
-          <button>{'+>'}</button>
+          <button onClick={this.onNewLeft}>{'<+'}</button>
+          <button onClick={this.onDelete}>{'X'}</button>
+          <button onClick={this.onNewRight}>{'+>'}</button>
         </div>
       </div>
     );

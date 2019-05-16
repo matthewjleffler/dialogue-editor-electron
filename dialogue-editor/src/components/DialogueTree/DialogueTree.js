@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import * as constants from '../../constants';
 import { connect } from 'react-redux';
 import { actionTreeSetActive } from '../../actions/treeAction';
-import { actionEntrySetActive } from '../../actions/entryActions';
+import { actionEntrySetActive, actionEntryRerender } from '../../actions/entryActions';
 import '../../../node_modules/react-ui-tree/dist/react-ui-tree.css';
 import './DialogueTree.css';
 import cx from 'classnames'
@@ -121,6 +121,7 @@ class DialogueTree extends Component {
     this.setState({
       tree: tree,
     });
+    this.props.actionEntryRerender();
   };
 
   checkTreeConsistencyRecursive(node) {
@@ -186,6 +187,7 @@ class DialogueTree extends Component {
           onChange={this.handleChange}
           isNodeCollapsed={this.isNodeCollapsed}
           renderNode={this.renderNode}
+          reRenderIndex={this.props.reRenderIndex}
         />
       </div>
     );
@@ -195,11 +197,13 @@ class DialogueTree extends Component {
 const mapStateToProps = state => ({
   active: state.treeReducer.active,
   region: state.entryReducer.region,
+  reRenderIndex: state.entryReducer.reRenderIndex,
 });
 
 const mapDispatchToProps = {
   actionTreeSetActive,
   actionEntrySetActive,
+  actionEntryRerender,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DialogueTree);

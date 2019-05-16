@@ -7,13 +7,8 @@ import '../DialoguePages/DialoguePages.css';
 import '../DialogueOptions/DialogueOptions.css';
 
 class StatusBar extends Component {
-  constructor(props) {
-    super(props);
 
-    this.onChange = this.onChange.bind(this);
-  }
-
-  onChange(event) {
+  onChange = (event) => {
     const value = event.target.value;
     if (value === 'new') {
       // TODO handle new

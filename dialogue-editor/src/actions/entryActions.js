@@ -34,3 +34,10 @@ export const actionEntrySetColor = (color) => dispatch => {
     payload: color,
   });
 }
+
+export const actionEntryRerender = () => dispatch => {
+  dispatch({
+    type: constants.ACTION_ENTRY_RERENDER,
+    payload: 1,
+  });
+}

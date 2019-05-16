@@ -6,6 +6,7 @@ const initialState = {
   regionList: ['en'],
   type: '',
   color: '',
+  reRenderIndex: 0,
 }
 
 export default (state = initialState, action) => {
@@ -44,6 +45,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         color: action.payload,
+      };
+    case constants.ACTION_ENTRY_RERENDER:
+      return {
+        ...state,
+        reRenderIndex: state.reRenderIndex + action.payload,
       };
     default:
       return state;
