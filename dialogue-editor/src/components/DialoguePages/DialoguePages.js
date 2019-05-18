@@ -41,6 +41,14 @@ class DialoguePages extends Component {
   }
   
   deletePage = (index) => {
+    console.log("Deleting: " + this.state.pageCount);
+    if (this.state.pageCount <= 1) {
+      window.alert('Cannot delete last page in an entry');
+      return;
+    }
+    if (!window.confirm("Are you sure you want to delete this page?")) {
+      return;
+    }
     this.region.page.splice(index, 1);
     this.updatePageCount();
   }

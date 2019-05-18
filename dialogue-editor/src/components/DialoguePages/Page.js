@@ -45,9 +45,6 @@ class Page extends Component {
   }
 
   onDelete = (event) => {
-    if (!window.confirm("Are you sure you want to delete this page?")) {
-      return;
-    }
     this.props.deletePage(this.props.index);
   }
 

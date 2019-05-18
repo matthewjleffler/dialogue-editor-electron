@@ -10,6 +10,7 @@ export const ACTION_ENTRY_RERENDER            = 'ACTION_ENTRY_RERENDER';
 
 // Tree actions
 export const ACTION_TREE_SET_ACTIVE           = 'ACTION_TREE_SET_ACTIVE';
+export const ACTION_TREE_SET_INPUT_TYPE       = 'ACTION_TREE_SET_INPUT_TYPE';
 
 // TODO doc
 function enumToString(enumobject, value) {
@@ -46,6 +47,20 @@ export const HIGLIGHT_COLOR = {
 // TODO doc
 export function highlightColorToString(value) {
   return enumToString(HIGLIGHT_COLOR, value);
+}
+
+// TODO doc
+export const INPUT_TYPE = {
+  NONE:           'NONE',
+  GROUP_NAME:     'GROUP_NAME',
+  ENTRY_NAME:     'ENTRY_NAME',
+  RENAME_ENTRY:   'RENAME_ENTRY',
+  RENAME_GROUP:   'RENAME_GROUP',
+};
+
+// TODO doc
+export function inputTypeToString(value) {
+  return enumToString(INPUT_TYPE, value);
 }
 
 // TODO doc

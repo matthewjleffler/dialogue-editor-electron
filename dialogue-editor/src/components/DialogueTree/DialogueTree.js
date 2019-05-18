@@ -43,6 +43,7 @@ class DialogueTree extends Component {
       // We clicked an entry, can't create a group under an entry
       return;
     }
+    this.contextNode.collapsed = false;
     // TODO text entry
     const newGroup = {
       id: "Test",
@@ -61,20 +62,72 @@ class DialogueTree extends Component {
     this.props.actionEntryRerender();
   }
 
-  onNewEntry() {
-    console.log("NEW ENTRY");
+  onNewEntry = () => {
+    if (!this.contextNode.group) {
+      return;
+    }
+    if (this.contextNode.parent === null) {
+      window.alert('Cannot add entries to root group.');
+      return;
+    }
+    this.contextNode.collapsed = false;
+    const regionList = [];
+    for (let i = 0; i < this.props.regionList.length; i++) {
+      regionList.push({
+        id: this.props.regionList[i],
+        page: [{ text: '' }],
+      });
+    }
+    // TODO text entry
+    const newEntry = {
+      id: "TestEntry",
+      type: constants.ENTRY_TYPE.NONE,
+      color: constants.HIGLIGHT_COLOR.DEFAULT,
+      mod: "f",
+      region: regionList,
+      parent: this.contextNode.group,
+    };
+    this.contextNode.group.entry.push(newEntry);
+    this.contextNode.children.push({
+      module: newEntry.id,
+      parent: this.contextNode,
+      leaf: true,
+      entry: newEntry,
+    });
+    this.props.actionEntryRerender();
   }
 
-  onDupliateId() {
+  onDupliateId = () => {
     console.log("DUPLICATE ID");
   }
 
-  onRename() {
+  onRename = () => {
     console.log("RENAME");
   }
 
-  onDelete() {
-    console.log("DELETE");
+  onDelete = () => {
+    if (this.contextNode.group) {
+      if (this.contextNode.parent === null) {
+        window.alert('Cannot delete root group');
+        return;
+      }
+      const group = this.contextNode.group;
+      // TODO tell about all children being deleted?
+      if (!window.confirm('Are you sure you want to delete this group? "' + group.id + '"')) {
+        return;
+      }
+      constants.arrayRemove(group.parent.group, group);
+      constants.arrayRemove(this.contextNode.parent.children, this.contextNode);
+      this.props.actionEntryRerender();
+    } else {
+      const entry = this.contextNode.entry;
+      if (!window.confirm('Are you sure you want to delete this entry? "' + entry.id + '"')) {
+        return;
+      }
+      constants.arrayRemove(entry.parent.entry, entry);
+      constants.arrayRemove(this.contextNode.parent.children, this.contextNode);
+      this.props.actionEntryRerender();
+    }
   }
 
   buildTree(constructedTree) {
@@ -263,6 +316,7 @@ class DialogueTree extends Component {
 const mapStateToProps = state => ({
   active: state.treeReducer.active,
   region: state.entryReducer.region,
+  regionList: state.entryReducer.regionList,
   reRenderIndex: state.entryReducer.reRenderIndex,
 });
 

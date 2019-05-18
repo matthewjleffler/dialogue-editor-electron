@@ -122,6 +122,9 @@ class App extends Component {
   buildParsedPage(pageArray, parsedPage) {
     if (parsedPage === null) {
       // No pages in this region
+      pageArray.push({
+        text: '',
+      });
       return;
     }
     parsedPage.forEach((page) => {
