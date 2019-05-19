@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as constants from '../../constants';
 import { connect } from 'react-redux';
-import { actionTreeSetActive } from '../../actions/treeAction';
+import { actionTreeSetActive, actionTreeSetInputType } from '../../actions/treeAction';
 import { actionEntrySetActive, actionEntryRerender } from '../../actions/entryActions';
 import '../../../node_modules/react-ui-tree/dist/react-ui-tree.css';
 import './DialogueTree.css';
@@ -15,6 +15,7 @@ class DialogueTree extends Component {
 
     // This is set on right click and interacted with
     this.contextNode = null;
+    this.textEntryType = null;
 
     this.state = {
       tree: this.buildTree(props.tree),
@@ -37,64 +38,30 @@ class DialogueTree extends Component {
     ipcRenderer.removeListener('context-tree-delete', this.onDelete);
   }
 
+  displayTextEntry(type) {
+    this.textEntryType = type;
+    this.props.actionTreeSetInputType(type);
+  }
+
   onNewGroup = () => {
     // Build new group and module representing that group
     if (!this.contextNode.group) {
-      // We clicked an entry, can't create a group under an entry
-      return;
+      // We clicked an entry, instead we create inside our parent group
+      this.contextNode = this.contextNode.parent;
     }
-    this.contextNode.collapsed = false;
-    // TODO text entry
-    const newGroup = {
-      id: "Test",
-      mod: "f",
-      group: [],
-      entry: [],
-      parent: this.contextNode.group,
-    };
-    this.contextNode.group.group.push(newGroup);
-    this.contextNode.children.push({
-      module: newGroup.id,
-      parent: this.contextNode,
-      children: [],
-      group: newGroup,
-    });
-    this.props.actionEntryRerender();
+    this.displayTextEntry(constants.INPUT_TYPE.GROUP_NAME);
   }
 
   onNewEntry = () => {
     if (!this.contextNode.group) {
-      return;
+      // We clicked an entry, instead we create inside our parent group
+      this.contextNode = this.contextNode.parent;
     }
     if (this.contextNode.parent === null) {
       window.alert('Cannot add entries to root group.');
       return;
     }
-    this.contextNode.collapsed = false;
-    const regionList = [];
-    for (let i = 0; i < this.props.regionList.length; i++) {
-      regionList.push({
-        id: this.props.regionList[i],
-        page: [{ text: '' }],
-      });
-    }
-    // TODO text entry
-    const newEntry = {
-      id: "TestEntry",
-      type: constants.ENTRY_TYPE.NONE,
-      color: constants.HIGLIGHT_COLOR.DEFAULT,
-      mod: "f",
-      region: regionList,
-      parent: this.contextNode.group,
-    };
-    this.contextNode.group.entry.push(newEntry);
-    this.contextNode.children.push({
-      module: newEntry.id,
-      parent: this.contextNode,
-      leaf: true,
-      entry: newEntry,
-    });
-    this.props.actionEntryRerender();
+    this.displayTextEntry(constants.INPUT_TYPE.ENTRY_NAME);
   }
 
   onDupliateId = () => {
@@ -128,6 +95,61 @@ class DialogueTree extends Component {
       constants.arrayRemove(this.contextNode.parent.children, this.contextNode);
       this.props.actionEntryRerender();
     }
+  }
+
+  readText = () => {
+    const readString = this.props.inputString;
+
+    switch (this.textEntryType) {
+      case constants.INPUT_TYPE.GROUP_NAME:
+        this.contextNode.collapsed = false;
+        const newGroup = {
+          id: readString,
+          mod: 't',
+          group: [],
+          entry: [],
+          parent: this.contextNode.group,
+        };
+        this.contextNode.group.group.push(newGroup);
+        this.contextNode.children.push({
+          module: newGroup.id,
+          parent: this.contextNode,
+          children: [],
+          group: newGroup,
+        });
+        break;
+      case constants.INPUT_TYPE.ENTRY_NAME:
+        this.contextNode.collapsed = false;
+        const regionList = [];
+        for (let i = 0; i < this.props.regionList.length; i++) {
+          regionList.push({
+            id: this.props.regionList[i],
+            page: [{ text: '' }],
+          });
+        }
+        const newEntry = {
+          id: readString,
+          type: constants.entryTypeToString(constants.ENTRY_TYPE.NONE),
+          color: constants.highlightColorToString(constants.HIGLIGHT_COLOR.DEFAULT),
+          mod: 't',
+          region: regionList,
+          parent: this.contextNode.group,
+        };
+        this.contextNode.group.entry.push(newEntry);
+        this.contextNode.children.push({
+          module: newEntry.id,
+          parent: this.contextNode,
+          leaf: true,
+          entry: newEntry,
+        });
+        break;
+    }
+
+    this.contextNode.children.sort(this.sortChildren);
+    this.props.actionEntryRerender();
+    this.textEntryType = null;
+    this.contextNode = null;
+    this.props.actionTreeSetInputType(constants.INPUT_TYPE.NONE);
   }
 
   buildTree(constructedTree) {
@@ -223,11 +245,21 @@ class DialogueTree extends Component {
   };
 
   onContext = (node) => {
+    // Ignore input if we're in input right now
+    if (this.props.inputType !== constants.INPUT_TYPE.NONE) {
+      return;
+    }
+
     this.contextNode = node;
     ipcRenderer.send('open-context-right-click');
   }
 
   onClickNode = (node) => {
+    // Ignore input if we're in input right now
+    if (this.props.inputType !== constants.INPUT_TYPE.NONE) {
+      return;
+    }
+
     this.props.actionTreeSetActive(node);
 
     if (node.entry !== undefined) {
@@ -236,9 +268,19 @@ class DialogueTree extends Component {
   };
 
   handleChange = tree => {
+    // Ignore input if we're in input right now
+    if (this.props.inputType !== constants.INPUT_TYPE.NONE) {
+      this.props.actionEntryRerender();
+      return;
+    }
+
     // TODO If the tree is in an invalid state, don't accept the change?
     // Root must be Content still
-    this.checkTreeConsistencyRecursive(tree);
+    if (!this.checkTreeConsistencyRecursive(tree)) {
+      // TODO this doesn't work
+      this.props.actionEntryRerender();
+      return;
+    }
     this.setState({
       tree: tree,
     });
@@ -247,13 +289,20 @@ class DialogueTree extends Component {
 
   checkTreeConsistencyRecursive(node) {
     if (!node.children) {
-      return;
+      return true;
     }
+
     for (var i = 0; i < node.children.length; i++) {
       const child = node.children[i];
       if (child.parent !== node) {
         child.parent = node;
         if (child.entry) {
+          if (node.parent === null) {
+            // If we're the root content node,
+            // and this is an entry node,
+            // the tree is invalidated
+            return false;
+          }
           const entry = child.entry;
           // Remove this entry from the previous parent
           constants.arrayRemove(entry.parent.entry, entry);
@@ -269,9 +318,12 @@ class DialogueTree extends Component {
           group.parent.group.push(group);
         }
       }
-      this.checkTreeConsistencyRecursive(child);
+      if (!this.checkTreeConsistencyRecursive(child)) {
+        return false;
+      }
       node.children.sort(this.sortChildren);
     }
+    return true;
   }
 
   sortChildren(left, right) {
@@ -295,6 +347,10 @@ class DialogueTree extends Component {
         tree: this.buildTree(this.props.tree),
       });
     }
+
+    if (this.props.inputType === constants.INPUT_TYPE.READ_TEXT && this.textEntryType !== null) {
+      this.readText();
+    }
   }
 
   render() {
@@ -315,6 +371,8 @@ class DialogueTree extends Component {
 
 const mapStateToProps = state => ({
   active: state.treeReducer.active,
+  inputType: state.treeReducer.inputType,
+  inputString: state.treeReducer.inputString,
   region: state.entryReducer.region,
   regionList: state.entryReducer.regionList,
   reRenderIndex: state.entryReducer.reRenderIndex,
@@ -322,6 +380,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   actionTreeSetActive,
+  actionTreeSetInputType,
   actionEntrySetActive,
   actionEntryRerender,
 };

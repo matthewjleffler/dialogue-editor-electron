@@ -6,3 +6,17 @@ export const actionTreeSetActive = (active) => dispatch => {
     payload: active,
   });
 }
+
+export const actionTreeSetInputType = (type) => dispatch => {
+  dispatch({
+    type: constants.ACTION_TREE_SET_INPUT_TYPE,
+    payload: type,
+  });
+}
+
+export const actionTreeSetInputString = (value) => dispatch => {
+  dispatch({
+    type: constants.ACTION_TREE_SET_INPUT_STRING,
+    payload: value,
+  });
+}

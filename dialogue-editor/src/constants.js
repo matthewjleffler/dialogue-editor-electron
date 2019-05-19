@@ -11,6 +11,7 @@ export const ACTION_ENTRY_RERENDER            = 'ACTION_ENTRY_RERENDER';
 // Tree actions
 export const ACTION_TREE_SET_ACTIVE           = 'ACTION_TREE_SET_ACTIVE';
 export const ACTION_TREE_SET_INPUT_TYPE       = 'ACTION_TREE_SET_INPUT_TYPE';
+export const ACTION_TREE_SET_INPUT_STRING     = 'ACTION_TREE_SET_INPUT_STRING';
 
 // TODO doc
 function enumToString(enumobject, value) {
@@ -56,6 +57,7 @@ export const INPUT_TYPE = {
   ENTRY_NAME:     'ENTRY_NAME',
   RENAME_ENTRY:   'RENAME_ENTRY',
   RENAME_GROUP:   'RENAME_GROUP',
+  READ_TEXT:      'READ_TEXT',
 };
 
 // TODO doc

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { actionEntrySetActive, actionEntryRerender } from '../../actions/entryActions';
 import './DialoguePages.css';
 import Page from './Page';
+import TextEntry from './TextEntry';
 
 class DialoguePages extends Component {
   constructor(props) {
@@ -62,31 +63,42 @@ class DialoguePages extends Component {
   }
 
   render() {
-    const pages = [];
+    const display = [];
 
-    if (this.props.entry !== null) {
-      const region = constants.getRegionFromEntry(this.props.entry, this.props.regionId);
-      if (region) {
-        for (let i = 0; i < region.page.length; i++) {
-          pages.push(this.createPage(this.props.entry, i, region));
+    switch (this.props.inputType) {
+      case constants.INPUT_TYPE.NONE:
+        if (this.props.entry !== null) {
+          const region = constants.getRegionFromEntry(this.props.entry, this.props.regionId);
+          if (region) {
+            for (let i = 0; i < region.page.length; i++) {
+              display.push(this.createPage(this.props.entry, i, region));
+            }
+          }
         }
-      }
-      
-      // If there are no pages, we need to add an initial page
-      if (pages.length < 1) {
-        pages.push(this.createPage(this.props.entry, 0));
-      }
+        break;
+      case constants.INPUT_TYPE.READ_TEXT:
+        // Nothing
+        break;
+      default:
+        display.push((
+          <TextEntry
+            key={'text_entry'}
+            inputType={this.props.inputType}
+          />
+        ));
+        break;
     }
     
     return (
       <div className="DialoguePagesContainer Scrolling">
-        {pages}
+        {display}
       </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
+  inputType: state.treeReducer.inputType,
   entry: state.entryReducer.entry,
   regionId: state.entryReducer.region,
 });
