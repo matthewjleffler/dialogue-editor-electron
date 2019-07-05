@@ -34,10 +34,16 @@ class App extends Component {
   
   componentDidMount() {
     ipcRenderer.on('tree_change', this.onTreeDataChanged);
+    ipcRenderer.on('get-project-export', this.onGetProjectExportRequest);
   }
 
   componentWillUnmount() {
     ipcRenderer.removeListener('tree_change', this.onTreeDataChanged);
+    ipcRenderer.removeListener('get-project-export', this.onGetProjectExportRequest);
+  }
+
+  onGetProjectExportRequest = (event, data) => {
+    ipcRenderer.send('receive-project-export', [data.msg, this.state.data]);
   }
 
   onTreeDataChanged = (event, data) => {
