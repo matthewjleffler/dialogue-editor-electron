@@ -1,0 +1,70 @@
+.DialoguePagesContainer {
+  padding: 5px;
+  flex: 1.8;
+  min-width: 365px;
+}
+
+.DialoguePagesContainer.Scrolling {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+}
+
+.DialoguePagesContainer.Scrolling::-webkit-scrollbar { 
+  background-color: transparent;
+}
+
+.DialoguePagesContainer.Scrolling::-webkit-scrollbar-thumb { 
+  background-color: #484c54;
+  border-radius: 20px;
+}
+
+.Page {
+  margin: 3px;
+  flex-direction: column;
+  width: 340px;
+}
+
+.Page .View {
+  background-color: #383c44;
+  display: flex;
+}
+
+.Page .ViewForm {
+  box-sizing: border-box;
+}
+
+.Page .ViewTextArea {
+  background-color: transparent;
+  border-color: transparent;
+  resize: none;
+  width: 340px;
+  height: 125px;
+  box-sizing: border-box;
+  font-family: monospace;
+  color: white;
+  font-size: 15px;
+}
+
+.Page .Status {
+  display: flex;
+  flex-direction: row;
+  height: 30px;
+}
+
+.Page .Status .Page {
+  flex: 1;
+  align-self: center;
+}
+
+.Page .Controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.Page .TextEntry {
+  padding: 5px;
+}

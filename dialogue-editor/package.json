@@ -1,17 +1,12 @@
 {
-  "name": "example",
+  "name": "DialogueEditor",
   "version": "1.0.0",
-  "description": "Building and Publishing a React Based Electron App From Scratch",
+  "description": "Dialogue Editor",
   "private": false,
-  "author": "Nick Parsons <nparsons08@gmail.com>",
+  "author": "Matt Leffler <matthewjleffler@gmail.com>",
   "license": "MIT",
   "homepage": "./",
   "main": "public/electron.js",
-  "keywords": [
-    "Example",
-    "React",
-    "Electron"
-  ],
   "scripts": {
     "dev": "yarn react-scripts start",
     "build": "react-scripts build",
@@ -20,11 +15,17 @@
     "dist": "npx build --x64 --macos --win --linux --c.extraMetadata.main=build/electron.js -p always"
   },
   "dependencies": {
-    "react-dom": "^16.6.3",
+    "classnames": "^2.2.6",
     "electron-is-dev": "^0.3.0",
     "electron-publisher-s3": "^20.17.2",
     "react": "^16.4.1",
-    "react-dev-utils": "^5.0.1"
+    "react-dev-utils": "^5.0.1",
+    "react-dom": "^16.6.3",
+    "react-redux": "^7.0.3",
+    "react-ui-tree": "^4.0.0",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "wait-on": "^3.2.0",

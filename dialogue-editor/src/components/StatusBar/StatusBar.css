@@ -1,0 +1,10 @@
+.StatusBar {
+  height: 30px;
+  background-color: #484c54;
+  display: flex;
+  flex-direction: row;
+}
+
+/* #Label .StatusBar {
+  align-self: center;
+} */

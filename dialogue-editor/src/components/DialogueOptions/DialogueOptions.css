@@ -1,0 +1,14 @@
+.OptionsContainer {
+  padding: 5px;
+  width: 150px;
+}
+
+.OptionsContainer.Scrolling {
+  background-color: #383c44;
+  display: flex;
+  flex-direction: column;
+}
+
+.OptionsContainer .Padding {
+  padding: 5px;
+}
