@@ -92,16 +92,20 @@ function openProject() {
   });
 }
 
-function requestSave(doSaveAs) {
-  mainWindow.webContents.send('get-project-export', {msg: doSaveAs});
+function requestSave(doSaveAs, doExport) {
+  mainWindow.webContents.send('get-project-export', {msg: {doSaveAs: doSaveAs, doExport: doExport}});
 }
 
 function saveProject() {
-  requestSave(currentProjectPath === '');
+  requestSave(currentProjectPath === '', false);
 }
 
 function saveProjectAs() {
-  requestSave(true);
+  requestSave(true, false);
+}
+
+function exportProject() {
+  requestSave(false, true);
 }
 
 function getIndent(indent) {
@@ -159,8 +163,100 @@ function dataToXml(data) {
   return result;
 }
 
+function getAllEntries(result, group) {
+  for (let i = 0; i < group.entry.length; i++) {
+    const entry = group.entry[i];
+    entry.parent = group;
+    result.push(entry);
+  }
+  for (let i = 0; i < group.group.length; i++) {
+    const childGroup = group.group[i];
+    childGroup.parent = group;
+    getAllEntries(result, childGroup);
+  }
+}
+
+function getEntryRegion(region, entry) {
+  for (let i = 0; i < entry.region.length; i++) {
+    if (entry.region[i].id === region) {
+      return entry.region[i];
+    }
+  }
+  return null;
+}
+
+function getEntryPath(entry) {
+  if (entry.parent === undefined || entry.id === 'Content') {
+    return '';
+  }
+  const parentPath = getEntryPath(entry.parent);
+  if (parentPath !== '') {
+    return parentPath + '.' + entry.id;
+  }
+  return entry.id;
+}
+
+function getEntryFlag(entry) {
+  switch (entry.type) {
+    case 'DIARY': return 'r';
+    default:      return 'n';
+  }
+}
+
+function cleanText(text) {
+  text = text.trimLeft();
+  text = text.trimRight();
+  text = text.replace('\r', '');
+  return text;
+}
+
+function getRegionPages(region) {
+  let result = '';
+  for (let i = 0; i < region.page.length; i++) {
+    const text = region.page[i].text;
+    if (!text || text.length < 1) {
+      continue;
+    }
+    if (i > 0) {
+      result += '%r'; // Page split
+    }
+    result += cleanText(text);
+  }
+  return result;
+}
+
+function dataToExportXml(data) {
+  let result = '<?xml version="1.0" encoding="UTF-8" standalone="no" ?>\n\n';
+
+  const allEntries = [];
+  getAllEntries(allEntries, data.group[0]);
+  
+  result += `<data>\n`;
+
+  for (let r = 0; r < data.info.regions.length; r++) {
+    const region = data.info.regions[r];
+    result += `\t<region id="${region}">\n`;
+
+    for (let e = 0; e < allEntries.length; e++) {
+      const entry = allEntries[e];
+      const entryRegion = getEntryRegion(region, entry);
+      if (entryRegion === null) {
+        continue;
+      }
+      result += `\t\t<line id="${getEntryPath(entry)}" flag="${getEntryFlag(entry)}"><![CDATA[${getRegionPages(entryRegion)}]]></line>\n`;
+    }
+    
+    result += `\t</region>\n`;
+  }
+  
+  result += `</data>\n`;
+
+  return result;
+}
+
 function finishSaveProject(args) {
-  const saveDialogue = args[0];
+  const saveDialogue = args[0].doSaveAs;
+  const doExport = args[0].doExport;
   const data = args[1];
   if (saveDialogue) {
     // Save as if appropriate
@@ -181,9 +277,20 @@ function finishSaveProject(args) {
   }
 
   const fs = require('fs');
-  fs.writeFile(currentProjectPath, dataToXml(data), callback=(err) => {
-    console.log(`Saved Project to: ${currentProjectPath}`);
-  });
+  let resultString = "";
+  if (doExport) {
+    resultString = dataToExportXml(data);
+    const exportPath = app.getPath('desktop') + '/translation.xml';
+    fs.writeFile(exportPath, resultString, callback=(err) => {
+      console.log(`Exported to: ${exportPath}`);
+    });
+  } else {
+    resultString = dataToXml(data);
+    fs.writeFile(currentProjectPath, resultString, callback=(err) => {
+      console.log(`Saved Project to: ${currentProjectPath}`);
+    });
+  }
+
 }
 
 function treeContextMenu() {
@@ -254,11 +361,13 @@ function generateMenu() {
         {
           type: 'separator',
         },
-        {
-          label: 'Import XML',
-        },
+        // {
+        //   label: 'Import XML',
+        // },
         {
           label: 'Export XML',
+          accelerator: 'CmdOrCtrl+E',
+          click: exportProject,
         },
         { type: 'separator' },
         { role: 'about' },
