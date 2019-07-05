@@ -61,11 +61,54 @@ function createWindow() {
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
 
+    readProjectPath();
+
     ipcMain.on('open-external-window', (event, arg) => {
       shell.openExternal(arg);
     });
   });
 };
+
+function writeProjectPath() {
+  const fs = require('fs');
+  const exportPath = app.getPath('userData') + '/userData.txt';
+  fs.writeFile(exportPath, currentProjectPath, callback=(err) => {
+    // console.log(`Saved Project Path: ${currentProjectPath}`);
+  });
+}
+
+function readProjectPath() {
+  const fs = require('fs');
+  const exportPath = app.getPath('userData') + '/userData.txt';
+  fs.exists(exportPath, (exists) => {
+    if (exists) {
+      fs.readFile(exportPath,'utf-8', (err, data) => {
+        if (err) {
+          return;
+        }
+        fs.exists(data, (projectExists) => {
+          if (projectExists) {
+            currentProjectPath = data;
+            finishOpenProject();
+          }
+        })
+      });
+    }
+  });
+}
+
+function finishOpenProject() {
+  const fs = require('fs');
+  fs.readFile(currentProjectPath, 'utf-8', (err, data) => {
+    if (err) {
+      // TODO log error
+      return;
+    }
+    const convert = require('xml-js');
+    const result = convert.xml2js(data, {compact: true});
+    mainWindow.webContents.send('tree_change', {msg: result});
+  });
+}
 
 function openProject() {
   const dialog = require('electron').dialog;
@@ -79,17 +122,10 @@ function openProject() {
     // TODO log no file opened
     return;
   }
-  const fs = require('fs');
   currentProjectPath = paths[0];
-  fs.readFile(currentProjectPath, 'utf-8', (err, data) => {
-    if (err) {
-      // TODO log error
-      return;
-    }
-    const convert = require('xml-js');
-    const result = convert.xml2js(data, {compact: true});
-    mainWindow.webContents.send('tree_change', {msg: result});
-  });
+  writeProjectPath();
+
+  finishOpenProject();
 }
 
 function requestSave(doSaveAs, doExport) {
@@ -289,8 +325,8 @@ function finishSaveProject(args) {
     fs.writeFile(currentProjectPath, resultString, callback=(err) => {
       console.log(`Saved Project to: ${currentProjectPath}`);
     });
+    writeProjectPath();
   }
-
 }
 
 function treeContextMenu() {
