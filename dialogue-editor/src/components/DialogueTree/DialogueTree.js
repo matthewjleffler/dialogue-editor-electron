@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as constants from '../../constants';
 import { connect } from 'react-redux';
-import { actionTreeSetActive, actionTreeSetInputType } from '../../actions/treeAction';
+import { actionTreeSetActive, actionTreeSetInputType, actionTreeSetInputInit } from '../../actions/treeAction';
 import { actionEntrySetActive, actionEntryRerender } from '../../actions/entryActions';
 import '../../../node_modules/react-ui-tree/dist/react-ui-tree.css';
 import './DialogueTree.css';
@@ -38,8 +38,9 @@ class DialogueTree extends Component {
     ipcRenderer.removeListener('context-tree-delete', this.onDelete);
   }
 
-  displayTextEntry(type) {
+  displayTextEntry(type, initialText) {
     this.textEntryType = type;
+    this.props.actionTreeSetInputInit(initialText);
     this.props.actionTreeSetInputType(type);
   }
 
@@ -49,7 +50,7 @@ class DialogueTree extends Component {
       // We clicked an entry, instead we create inside our parent group
       this.contextNode = this.contextNode.parent;
     }
-    this.displayTextEntry(constants.INPUT_TYPE.GROUP_NAME);
+    this.displayTextEntry(constants.INPUT_TYPE.GROUP_NAME, '');
   }
 
   onNewEntry = () => {
@@ -61,7 +62,7 @@ class DialogueTree extends Component {
       window.alert('Cannot add entries to root group.');
       return;
     }
-    this.displayTextEntry(constants.INPUT_TYPE.ENTRY_NAME);
+    this.displayTextEntry(constants.INPUT_TYPE.ENTRY_NAME, '');
   }
 
   onDupliateId = () => {
@@ -70,6 +71,16 @@ class DialogueTree extends Component {
 
   onRename = () => {
     console.log("RENAME");
+    if (this.contextNode.group) {
+      if (this.contextNode.parent == null) {
+        window.alert('Cannot rename root group');
+        return;
+      }
+      
+      this.displayTextEntry(constants.INPUT_TYPE.RENAME_GROUP, this.contextNode.group.id);
+    } else {
+      this.displayTextEntry(constants.INPUT_TYPE.RENAME_ENTRY, this.contextNode.entry.id);
+    }
   }
 
   onDelete = () => {
@@ -143,9 +154,19 @@ class DialogueTree extends Component {
           entry: newEntry,
         });
         break;
+      case constants.INPUT_TYPE.RENAME_GROUP:
+        this.contextNode.module = readString;
+        this.contextNode.group.id = readString;
+        break;
+      case constants.INPUT_TYPE.RENAME_ENTRY:
+        this.contextNode.module = readString;
+        this.contextNode.entry.id = readString;
+        break;
     }
 
-    this.contextNode.children.sort(this.sortChildren);
+    if (this.contextNode.children) {
+      this.contextNode.children.sort(this.sortChildren);
+    }
     this.props.actionEntryRerender();
     this.textEntryType = null;
     this.contextNode = null;
@@ -381,6 +402,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   actionTreeSetActive,
   actionTreeSetInputType,
+  actionTreeSetInputInit,
   actionEntrySetActive,
   actionEntryRerender,
 };

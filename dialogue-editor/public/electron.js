@@ -101,7 +101,7 @@ function finishOpenProject() {
   const fs = require('fs');
   fs.readFile(currentProjectPath, 'utf-8', (err, data) => {
     if (err) {
-      // TODO log error
+      console.log(`Error reading project file at ${currentProjectPath}`);
       return;
     }
     const convert = require('xml-js');
@@ -119,7 +119,6 @@ function openProject() {
     },
   );
   if (paths === undefined) {
-    // TODO log no file opened
     return;
   }
   currentProjectPath = paths[0];

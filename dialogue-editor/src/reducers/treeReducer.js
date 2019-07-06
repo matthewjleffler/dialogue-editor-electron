@@ -4,6 +4,7 @@ const initialState = {
   active: null,
   inputType: constants.INPUT_TYPE.NONE,
   inputString: '',
+  inputInit: '',
 };
 
 export default (state = initialState, action) => {
@@ -22,6 +23,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         inputString: action.payload,
+      };
+    case constants.ACTION_TREE_SET_INPUT_INIT:
+      return {
+        ...state,
+        inputInit: action.payload,
       };
     default:
       return state;

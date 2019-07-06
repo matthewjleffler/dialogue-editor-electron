@@ -17,8 +17,10 @@ class TextEntry extends Component {
         initialPrompt = 'NewEntry';
         break;
       case constants.INPUT_TYPE.RENAME_ENTRY:
+        initialPrompt = props.inputInit;
         break;
       case constants.INPUT_TYPE.RENAME_GROUP:
+        initialPrompt = props.inputInit;
         break;
       default:
         break;
@@ -109,6 +111,7 @@ class TextEntry extends Component {
 
 const mapStateToProps = state => ({
   inputString: state.treeReducer.inputString,
+  inputInit: state.treeReducer.inputInit,
 });
 
 const mapDispatchToProps = {
