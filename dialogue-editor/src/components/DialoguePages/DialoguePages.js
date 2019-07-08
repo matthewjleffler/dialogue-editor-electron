@@ -25,9 +25,10 @@ class DialoguePages extends Component {
   }
 
   createPage(entry, index, region) {
+    const key = `${constants.getFullEntryPath(entry)}_page_${index}_${this.state.pageCount}`;
     return (
       <Page
-        key={entry.id + '_page_' + index + '_' + this.state.pageCount}
+        key={key}
         index={index}
         region={region}
         pushNewPage={this.pushNewPage}
@@ -42,7 +43,6 @@ class DialoguePages extends Component {
   }
   
   deletePage = (index) => {
-    console.log("Deleting: " + this.state.pageCount);
     if (this.state.pageCount <= 1) {
       window.alert('Cannot delete last page in an entry');
       return;

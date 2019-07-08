@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { getFullEntryPath } from '../../constants';
 import { actionEntrySetRegion, actionEntrySetRegionList } from '../../actions/entryActions';
 import './StatusBar.css';
 import '../DialogueTree/DialogueTree.css';
@@ -20,13 +21,7 @@ class StatusBar extends Component {
   render() {
     let entryTitle = "No Entry Selected";
     if (this.props.entry !== null) {
-      let entry = this.props.entry;
-      let stringId = entry.id;
-      while (entry.parent && entry.parent.id !== "Content") {
-        entry = entry.parent;
-        stringId = entry.id + "." + stringId;
-      }
-      entryTitle = "Entry: " + stringId;
+      entryTitle = "Entry: " + getFullEntryPath(this.props.entry);
     }
 
     const allOptions = [];

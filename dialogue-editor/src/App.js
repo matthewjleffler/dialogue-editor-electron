@@ -35,6 +35,7 @@ class App extends Component {
   componentDidMount() {
     ipcRenderer.on('tree_change', this.onTreeDataChanged);
     ipcRenderer.on('get-project-export', this.onGetProjectExportRequest);
+    ipcRenderer.send('reload-last-project');
   }
 
   componentWillUnmount() {

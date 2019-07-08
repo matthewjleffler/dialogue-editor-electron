@@ -29,6 +29,9 @@ class DialogueEntryType extends Component {
   }
 
   handleRadioChange = (event) => {
+    if (this.props.entry === null) {
+      return;
+    }
     const value = event.target.value;
     this.props.entry.type = value;
     this.props.actionEntrySetType(value);

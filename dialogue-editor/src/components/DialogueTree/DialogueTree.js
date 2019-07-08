@@ -62,15 +62,16 @@ class DialogueTree extends Component {
       window.alert('Cannot add entries to root group.');
       return;
     }
+    this.props.actionTreeSetActive(this.contextNode);
     this.displayTextEntry(constants.INPUT_TYPE.ENTRY_NAME, '');
   }
 
+  // TODO implement
   onDupliateId = () => {
     console.log("DUPLICATE ID");
   }
 
   onRename = () => {
-    console.log("RENAME");
     if (this.contextNode.group) {
       if (this.contextNode.parent == null) {
         window.alert('Cannot rename root group');
@@ -83,6 +84,18 @@ class DialogueTree extends Component {
     }
   }
 
+  iterateGroups(parent, groupAction, entryAction) {
+    for (let i = 0; i < parent.group.length; i++) {
+      const group = parent.group[i];
+      groupAction(group);
+      this.iterateGroups(group, groupAction, entryAction);
+    }
+    for (let i = 0; i < parent.entry.length; i++) {
+      const entry = parent.entry[i];
+      entryAction(entry);
+    }
+  }
+
   onDelete = () => {
     if (this.contextNode.group) {
       if (this.contextNode.parent === null) {
@@ -90,17 +103,56 @@ class DialogueTree extends Component {
         return;
       }
       const group = this.contextNode.group;
-      // TODO tell about all children being deleted?
-      if (!window.confirm('Are you sure you want to delete this group? "' + group.id + '"')) {
+      let groupCount = 0;
+      let entryCount = 0;
+      this.iterateGroups(group, 
+        (childGroup) => {
+          groupCount++;
+        },
+        (childEntry) => {
+          entryCount++;
+        } 
+      );
+
+      let prompt = `Are you sure you want to delete the group "${group.id}"?`;
+      if (groupCount == 1) {
+        prompt += `\n\tContains 1 child group`;
+      } else if (groupCount > 1) {
+        prompt += `\n\tContains ${groupCount} child groups`;
+      }
+      if (entryCount == 1) {
+        prompt += `\n\tContains 1 entry`;
+      } else if (entryCount > 1) {
+        prompt += `\n\tContains ${entryCount} entries`;
+      }
+
+      if (!window.confirm(prompt)) {
         return;
       }
+
+      // Mark children as deleted
+      this.iterateGroups(group,
+        (childGroup) => {
+          childGroup.deleted = true;
+        },
+        (childEntry) => {
+          childEntry.deleted = true;
+        }
+      );
+
       constants.arrayRemove(group.parent.group, group);
       constants.arrayRemove(this.contextNode.parent.children, this.contextNode);
+      if (this.props.entry.deleted === true) {
+        this.props.actionEntrySetActive(null);
+      }
       this.props.actionEntryRerender();
     } else {
       const entry = this.contextNode.entry;
       if (!window.confirm('Are you sure you want to delete this entry? "' + entry.id + '"')) {
         return;
+      }
+      if (entry === this.props.entry) {
+        this.props.actionEntrySetActive(null);
       }
       constants.arrayRemove(entry.parent.entry, entry);
       constants.arrayRemove(this.contextNode.parent.children, this.contextNode);
@@ -112,7 +164,7 @@ class DialogueTree extends Component {
     const readString = this.props.inputString;
 
     switch (this.textEntryType) {
-      case constants.INPUT_TYPE.GROUP_NAME:
+      case constants.INPUT_TYPE.GROUP_NAME: {
         this.contextNode.collapsed = false;
         const newGroup = {
           id: readString,
@@ -122,14 +174,16 @@ class DialogueTree extends Component {
           parent: this.contextNode.group,
         };
         this.contextNode.group.group.push(newGroup);
-        this.contextNode.children.push({
+        const newNode = {
           module: newGroup.id,
           parent: this.contextNode,
           children: [],
           group: newGroup,
-        });
-        break;
-      case constants.INPUT_TYPE.ENTRY_NAME:
+        };
+        this.contextNode.children.push(newNode);
+        this.props.actionTreeSetActive(newNode);
+      } break;
+      case constants.INPUT_TYPE.ENTRY_NAME: {
         this.contextNode.collapsed = false;
         const regionList = [];
         for (let i = 0; i < this.props.regionList.length; i++) {
@@ -147,13 +201,16 @@ class DialogueTree extends Component {
           parent: this.contextNode.group,
         };
         this.contextNode.group.entry.push(newEntry);
-        this.contextNode.children.push({
+        const newNode = {
           module: newEntry.id,
           parent: this.contextNode,
           leaf: true,
           entry: newEntry,
-        });
-        break;
+        };
+        this.contextNode.children.push(newNode);
+        this.props.actionTreeSetActive(newNode);
+        this.props.actionEntrySetActive(newEntry);
+      } break;
       case constants.INPUT_TYPE.RENAME_GROUP:
         this.contextNode.module = readString;
         this.contextNode.group.id = readString;
@@ -161,11 +218,18 @@ class DialogueTree extends Component {
       case constants.INPUT_TYPE.RENAME_ENTRY:
         this.contextNode.module = readString;
         this.contextNode.entry.id = readString;
+        this.props.actionEntrySetActive(null);
+        this.props.actionEntrySetActive(this.contextNode.entry);
+        break;
+      default:
+        // Unhandled type
         break;
     }
 
     if (this.contextNode.children) {
       this.contextNode.children.sort(this.sortChildren);
+    } else {
+      this.contextNode.parent.children.sort(this.sortChildren);
     }
     this.props.actionEntryRerender();
     this.textEntryType = null;
@@ -218,12 +282,6 @@ class DialogueTree extends Component {
 
     // If this is an entry, fill out the necessary content
     if (entry !== undefined) {
-      // Set line color
-      const color = entry.color;
-      if (color !== constants.HIGLIGHT_COLOR) {
-        spanStyle.backgroundColor = constants.HIGLIGHT_COLOR[color];
-      }
-
       let numPages = 0;
       // Find the number of pages for this region
       const region = constants.getRegionFromEntry(entry, this.props.region);
@@ -285,6 +343,8 @@ class DialogueTree extends Component {
 
     if (node.entry !== undefined) {
       this.props.actionEntrySetActive(node.entry);
+    } else {
+      this.props.actionEntrySetActive(null);
     }
   };
 
@@ -394,6 +454,7 @@ const mapStateToProps = state => ({
   active: state.treeReducer.active,
   inputType: state.treeReducer.inputType,
   inputString: state.treeReducer.inputString,
+  entry: state.entryReducer.entry,
   region: state.entryReducer.region,
   regionList: state.entryReducer.regionList,
   reRenderIndex: state.entryReducer.reRenderIndex,

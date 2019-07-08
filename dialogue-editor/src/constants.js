@@ -105,3 +105,13 @@ export function arrayRemove(array, value) {
     array.splice(index, 1);
   }
 }
+
+// TODO doc
+export function getFullEntryPath(entry) {
+  let result = entry.id;
+  while (entry.parent && entry.parent.id !== "Content") {
+    entry = entry.parent;
+    result = entry.id + "." + result;
+  }
+  return result;
+}

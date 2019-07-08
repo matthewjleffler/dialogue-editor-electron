@@ -60,9 +60,6 @@ function createWindow() {
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
-
-    readProjectPath();
-
     ipcMain.on('open-external-window', (event, arg) => {
       shell.openExternal(arg);
     });
@@ -486,4 +483,8 @@ ipcMain.on('open-context-right-click', (event, arg) => {
 
 ipcMain.on('receive-project-export', (event, arg) => {
   finishSaveProject(arg);
+});
+
+ipcMain.on('reload-last-project', (event, arg) => {
+  readProjectPath();
 });

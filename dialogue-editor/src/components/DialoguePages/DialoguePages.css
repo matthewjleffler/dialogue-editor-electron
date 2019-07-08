@@ -68,3 +68,7 @@
 .Page .TextEntry {
   padding: 5px;
 }
+
+.Page .TextLine {
+  width: 400px;
+}

@@ -93,6 +93,7 @@ class TextEntry extends Component {
           onSubmit={this.onSubmit}
         >
           <input
+            className="TextLine"
             ref={(input) => { this.inputLine = input;}}
             type="text"
             value={this.state.value}

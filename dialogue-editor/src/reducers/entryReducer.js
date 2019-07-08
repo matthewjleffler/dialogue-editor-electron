@@ -12,6 +12,14 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case constants.ACTION_ENTRY_SET_ACTIVE:
+      if (action.payload === null) {
+        return {
+          ...state,
+          entry: null,
+          type: '',
+          color: '',
+        };
+      }
       return {
         ...state,
         entry: action.payload,
