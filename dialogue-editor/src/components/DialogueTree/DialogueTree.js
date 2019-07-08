@@ -246,7 +246,18 @@ class DialogueTree extends Component {
       parent: null,
     }
     this.buildTreeRecursive(rootGroup, rootTree);
+    this.sortTreeRecursive(rootTree);
     return rootTree;
+  }
+
+  sortTreeRecursive = (node) => {
+    if (!node.children || node.children.length < 1) {
+      return;
+    }
+    for (let i = 0; i < node.children.length; i++) {
+      this.sortTreeRecursive(node.children[i]);
+    }
+    node.children.sort(this.sortChildren);
   }
 
   buildTreeRecursive(parent, treeNode) {
