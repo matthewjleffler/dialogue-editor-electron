@@ -142,7 +142,7 @@ class DialogueTree extends Component {
 
       constants.arrayRemove(group.parent.group, group);
       constants.arrayRemove(this.contextNode.parent.children, this.contextNode);
-      if (this.props.entry.deleted === true) {
+      if (this.props.entry && this.props.entry.deleted === true) {
         this.props.actionEntrySetActive(null);
       }
       this.props.actionEntryRerender();
