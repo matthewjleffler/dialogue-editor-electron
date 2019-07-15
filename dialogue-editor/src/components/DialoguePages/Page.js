@@ -18,6 +18,9 @@ class Page extends Component {
     }
     const page = props.region.page[props.index];
     if (page !== undefined) {
+      if (page.text === undefined) {
+        return "";
+      }
       return page.text;
     } else {
       return "";
