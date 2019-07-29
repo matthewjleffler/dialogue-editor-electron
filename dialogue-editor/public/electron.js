@@ -60,9 +60,6 @@ function createWindow() {
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
-
-    readProjectPath();
-
     ipcMain.on('open-external-window', (event, arg) => {
       shell.openExternal(arg);
     });
@@ -101,7 +98,7 @@ function finishOpenProject() {
   const fs = require('fs');
   fs.readFile(currentProjectPath, 'utf-8', (err, data) => {
     if (err) {
-      // TODO log error
+      console.log(`Error reading project file at ${currentProjectPath}`);
       return;
     }
     const convert = require('xml-js');
@@ -119,7 +116,6 @@ function openProject() {
     },
   );
   if (paths === undefined) {
-    // TODO log no file opened
     return;
   }
   currentProjectPath = paths[0];
@@ -487,4 +483,8 @@ ipcMain.on('open-context-right-click', (event, arg) => {
 
 ipcMain.on('receive-project-export', (event, arg) => {
   finishSaveProject(arg);
+});
+
+ipcMain.on('reload-last-project', (event, arg) => {
+  readProjectPath();
 });

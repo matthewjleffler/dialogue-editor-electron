@@ -20,3 +20,10 @@ export const actionTreeSetInputString = (value) => dispatch => {
     payload: value,
   });
 }
+
+export const actionTreeSetInputInit = (value) => dispatch => {
+  dispatch({
+    type: constants.ACTION_TREE_SET_INPUT_INIT,
+    payload: value,
+  });
+}

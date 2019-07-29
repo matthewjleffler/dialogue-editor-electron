@@ -12,6 +12,7 @@ export const ACTION_ENTRY_RERENDER            = 'ACTION_ENTRY_RERENDER';
 export const ACTION_TREE_SET_ACTIVE           = 'ACTION_TREE_SET_ACTIVE';
 export const ACTION_TREE_SET_INPUT_TYPE       = 'ACTION_TREE_SET_INPUT_TYPE';
 export const ACTION_TREE_SET_INPUT_STRING     = 'ACTION_TREE_SET_INPUT_STRING';
+export const ACTION_TREE_SET_INPUT_INIT       = 'ACTION_TREE_SET_INPUT_INIT';
 
 // TODO doc
 function enumToString(enumobject, value) {
@@ -103,4 +104,14 @@ export function arrayRemove(array, value) {
   while ((index = array.indexOf(value)) > -1) {
     array.splice(index, 1);
   }
+}
+
+// TODO doc
+export function getFullEntryPath(entry) {
+  let result = entry.id;
+  while (entry.parent && entry.parent.id !== "Content") {
+    entry = entry.parent;
+    result = entry.id + "." + result;
+  }
+  return result;
 }
