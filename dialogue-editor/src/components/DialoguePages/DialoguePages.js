@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { actionEntrySetActive, actionEntryRerender } from '../../actions/entryActions';
 import './DialoguePages.css';
 import Page from './Page';
+import Search from '../Search/Search';
 import TextEntry from './TextEntry';
 
 class DialoguePages extends Component {
@@ -91,6 +92,7 @@ class DialoguePages extends Component {
     
     return (
       <div className="DialoguePagesContainer Scrolling">
+        <Search label="Search Text:"/>
         {display}
       </div>
     );

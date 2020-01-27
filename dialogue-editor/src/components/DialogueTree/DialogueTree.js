@@ -7,6 +7,7 @@ import '../../../node_modules/react-ui-tree/dist/react-ui-tree.css';
 import './DialogueTree.css';
 import cx from 'classnames'
 import Tree from 'react-ui-tree';
+import Search from '../Search/Search';
 const { ipcRenderer } = window.require('electron');
 
 class DialogueTree extends Component {
@@ -115,12 +116,12 @@ class DialogueTree extends Component {
       );
 
       let prompt = `Are you sure you want to delete the group "${group.id}"?`;
-      if (groupCount == 1) {
+      if (groupCount === 1) {
         prompt += `\n\tContains 1 child group`;
       } else if (groupCount > 1) {
         prompt += `\n\tContains ${groupCount} child groups`;
       }
-      if (entryCount == 1) {
+      if (entryCount === 1) {
         prompt += `\n\tContains 1 entry`;
       } else if (entryCount > 1) {
         prompt += `\n\tContains ${entryCount} entries`;
@@ -448,6 +449,7 @@ class DialogueTree extends Component {
   render() {
     return (
       <div className="TreeContainer Scrolling">
+        <Search label="Search Ids:"/>
         <Tree
           paddingLeft={20}
           tree={this.state.tree}
