@@ -13,6 +13,8 @@ export const ACTION_TREE_SET_ACTIVE           = 'ACTION_TREE_SET_ACTIVE';
 export const ACTION_TREE_SET_INPUT_TYPE       = 'ACTION_TREE_SET_INPUT_TYPE';
 export const ACTION_TREE_SET_INPUT_STRING     = 'ACTION_TREE_SET_INPUT_STRING';
 export const ACTION_TREE_SET_INPUT_INIT       = 'ACTION_TREE_SET_INPUT_INIT';
+export const ACTION_TREE_SET_FILTER_ID        = 'ACTION_TREE_SET_FILTER_ID';
+export const ACTION_TREE_SET_FILTER_TEXT      = 'ACTION_TREE_SET_FILTER_TEXT';
 
 // TODO doc
 function enumToString(enumobject, value) {

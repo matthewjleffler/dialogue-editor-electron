@@ -5,6 +5,8 @@ const initialState = {
   inputType: constants.INPUT_TYPE.NONE,
   inputString: '',
   inputInit: '',
+  filterId: '',
+  filterText: '',
 };
 
 export default (state = initialState, action) => {
@@ -28,6 +30,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         inputInit: action.payload,
+      };
+    case constants.ACTION_TREE_SET_FILTER_ID:
+      return {
+        ...state,
+        filterId: action.payload.toLowerCase(),
+      };
+    case constants.ACTION_TREE_SET_FILTER_TEXT:
+      return {
+        ...state,
+        filterText: action.payload.toLowerCase(),
       };
     default:
       return state;

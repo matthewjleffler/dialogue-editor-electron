@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import * as constants from '../../constants';
 import { connect } from 'react-redux';
+import { actionTreeSetFilterText } from '../../actions/treeAction';
 import { actionEntrySetActive, actionEntryRerender } from '../../actions/entryActions';
 import './DialoguePages.css';
 import Page from './Page';
@@ -92,7 +93,7 @@ class DialoguePages extends Component {
     
     return (
       <div className="DialoguePagesContainer Scrolling">
-        <Search label="Search Text:"/>
+        <Search label="Search Text:" dispatchAction={this.props.actionTreeSetFilterText}/>
         {display}
       </div>
     );
@@ -108,6 +109,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   actionEntrySetActive,
   actionEntryRerender,
+  actionTreeSetFilterText,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DialoguePages);

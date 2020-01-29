@@ -27,3 +27,17 @@ export const actionTreeSetInputInit = (value) => dispatch => {
     payload: value,
   });
 }
+
+export const actionTreeSetFilterId = (value) => dispatch => {
+  dispatch({
+    type: constants.ACTION_TREE_SET_FILTER_ID,
+    payload: value,
+  });
+}
+
+export const actionTreeSetFilterText = (value) => dispatch => {
+  dispatch({
+    type: constants.ACTION_TREE_SET_FILTER_TEXT,
+    payload: value,
+  });
+}

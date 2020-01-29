@@ -9,10 +9,21 @@ class Search extends Component {
     };
   }
 
-  onChange = (event) => {
+  setString = (value) => {
     this.setState({
-      searchString: event.target.value,
+      searchString: value,
     });
+    if (this.props.dispatchAction) {
+      this.props.dispatchAction(value);
+    }
+  }
+
+  onChange = (event) => {
+    this.setString(event.target.value);
+  }
+
+  onClear = (event) => {
+    this.setString('');
   }
 
   render() {
@@ -24,6 +35,9 @@ class Search extends Component {
           placeholder={this.props.label}
           onChange={this.onChange}
         />
+        <button onClick={this.onClear}>
+          x
+        </button>
       </div>
     )
   }

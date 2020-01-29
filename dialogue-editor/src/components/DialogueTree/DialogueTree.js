@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import * as constants from '../../constants';
 import { connect } from 'react-redux';
-import { actionTreeSetActive, actionTreeSetInputType, actionTreeSetInputInit } from '../../actions/treeAction';
+import {
+  actionTreeSetActive,
+  actionTreeSetInputType,
+  actionTreeSetInputInit,
+  actionTreeSetFilterId,
+} from '../../actions/treeAction';
 import { actionEntrySetActive, actionEntryRerender } from '../../actions/entryActions';
 import '../../../node_modules/react-ui-tree/dist/react-ui-tree.css';
 import './DialogueTree.css';
@@ -264,6 +269,9 @@ class DialogueTree extends Component {
   buildTreeRecursive(parent, treeNode) {
     for (let i = 0; i < parent.group.length; i++) {
       const group = parent.group[i];
+      if (!this.groupContainsFilterRecusive(group)) {
+        continue;
+      }
       const newBranch = {
         module: group.id,
         children: [],
@@ -284,6 +292,74 @@ class DialogueTree extends Component {
       }
       treeNode.children.push(newBranch);
     }
+  }
+
+  groupContainsFilterRecusive = (group) => {
+    if (this.groupContainsFilterId(group)) {
+      return true;
+    }
+    for (let i = 0; i < group.group.length; i++) {
+      if (this.groupContainsFilterRecusive(group.group[i])) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  groupContainsFilterId = (group) => {
+    if (group.id === 'Content') {
+      return true; // Always show root node
+    }
+    // No filter, render
+    if (this.props.filterId === '') {
+      return true;
+    }
+    // We contain filter, render
+    if (group.id.toLowerCase().includes(this.props.filterId)) {
+      return true;
+    }
+    // Entry contains filter, render
+    for (let i = 0; i < group.entry.length; i++) {
+      if (this.entryMeetsFilterCriteria(group.entry[i])) {
+        return true;
+      }
+    }
+    // Parent contains filter, render
+    if (this.parentContainsFilterId(group)) {
+      return true;
+    }
+    // We don't contain filter
+    return false;
+  }
+
+  parentContainsFilterId = (group) => {
+    // Don't count root
+    if (group.id.includes('Content')) {
+      return false;
+    }
+    // We contain filter, render
+    if (group.id.toLowerCase().includes(this.props.filterId)) {
+      return true;
+    }
+    return this.parentContainsFilterId(group.parent);
+  }
+
+  entryMeetsFilterCriteria = (entry) => {
+    // No filter, render
+    if (this.props.filterId === '') {
+      return true;
+    }
+    // We contain filter, render
+    if (entry.id.toLowerCase().includes(this.props.filterId)) {
+      return true;
+    }
+    // We contain text filter, render
+    // TODO CHECK ENTRY TEXT
+    // if (entry.text.toLowerCase().includes(this.props.filterText)) {
+    //   return true;
+    // }
+    // We don't contain filter
+    return false;
   }
 
   renderNode = node => {
@@ -435,7 +511,11 @@ class DialogueTree extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.tree !== prevProps.tree) {
+    if (
+      this.props.tree !== prevProps.tree || 
+      this.props.filterId !== prevProps.filterId ||
+      this.props.filterText !== prevProps.filterText
+    ) {
       this.setState({
         tree: this.buildTree(this.props.tree),
       });
@@ -449,7 +529,7 @@ class DialogueTree extends Component {
   render() {
     return (
       <div className="TreeContainer Scrolling">
-        <Search label="Search Ids:"/>
+        <Search label="Search Ids:" dispatchAction={this.props.actionTreeSetFilterId}/>
         <Tree
           paddingLeft={20}
           tree={this.state.tree}
@@ -467,6 +547,8 @@ const mapStateToProps = state => ({
   active: state.treeReducer.active,
   inputType: state.treeReducer.inputType,
   inputString: state.treeReducer.inputString,
+  filterId: state.treeReducer.filterId,
+  filterText: state.treeReducer.filterText,
   entry: state.entryReducer.entry,
   region: state.entryReducer.region,
   regionList: state.entryReducer.regionList,
@@ -477,6 +559,7 @@ const mapDispatchToProps = {
   actionTreeSetActive,
   actionTreeSetInputType,
   actionTreeSetInputInit,
+  actionTreeSetFilterId,
   actionEntrySetActive,
   actionEntryRerender,
 };
