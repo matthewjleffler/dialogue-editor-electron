@@ -1,3 +1,12 @@
+.TrayPages {
+  padding: 5px;
+  min-width: 365px;
+  display: flex;
+  flex-direction: column;
+  flex: 1.8;
+  overflow: hidden;
+}
+
 .DialoguePagesContainer {
   padding: 5px;
   flex: 1.8;

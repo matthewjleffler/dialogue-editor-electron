@@ -601,16 +601,19 @@ class DialogueTree extends Component {
 
   render() {
     return (
-      <div className="TreeContainer Scrolling">
+      <div className="TrayTree">
         <Search label="Search Ids:" dispatchAction={this.props.actionTreeSetFilterId}/>
-        <Tree
-          paddingLeft={20}
-          tree={this.state.tree}
-          onChange={this.handleChange}
-          isNodeCollapsed={this.isNodeCollapsed}
-          renderNode={this.renderNode}
-          reRenderIndex={this.props.reRenderIndex}
-        />
+        <div className="TreeContainer Scrolling">
+          {/* <Search label="Search Ids:" dispatchAction={this.props.actionTreeSetFilterId}/> */}
+          <Tree
+            paddingLeft={20}
+            tree={this.state.tree}
+            onChange={this.handleChange}
+            isNodeCollapsed={this.isNodeCollapsed}
+            renderNode={this.renderNode}
+            reRenderIndex={this.props.reRenderIndex}
+          />
+        </div>
       </div>
     );
   }

@@ -92,9 +92,11 @@ class DialoguePages extends Component {
     }
     
     return (
-      <div className="DialoguePagesContainer Scrolling">
+      <div className="TrayPages">
         <Search label="Search Text:" dispatchAction={this.props.actionTreeSetFilterText}/>
-        {display}
+        <div className="DialoguePagesContainer Scrolling">
+          {display}
+        </div>
       </div>
     );
   }

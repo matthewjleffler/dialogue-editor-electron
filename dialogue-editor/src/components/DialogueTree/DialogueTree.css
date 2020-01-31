@@ -1,3 +1,13 @@
+.TrayTree {
+  padding: 5px;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: #383c44;
+  overflow: hidden;
+}
+
 .TreeContainer {
   padding: 5px;
   flex: 1;
@@ -7,7 +17,7 @@
 .TreeContainer.Scrolling {
   overflow-y: auto;
   overflow-x: auto;
-  background-color: #383c44;
+  min-height: 0px;
 }
 
 .TreeContainer.Scrolling::-webkit-scrollbar { 
