@@ -251,7 +251,9 @@ class DialogueTree extends Component {
       group: rootGroup,
       parent: null,
     }
-    this.buildTreeRecursive(rootGroup, rootTree);
+    const count = { num: 0 };
+    this.markFiltersRecursive(this.isFilteringId(), this.isFilteringText(), rootGroup, false, count);
+    this.buildTreeRecursive(rootGroup, rootTree, count.num > 40);
     this.sortTreeRecursive(rootTree);
     return rootTree;
   }
@@ -266,22 +268,25 @@ class DialogueTree extends Component {
     node.children.sort(this.sortChildren);
   }
 
-  buildTreeRecursive(parent, treeNode) {
+  buildTreeRecursive(parent, treeNode, collapse) {
     for (let i = 0; i < parent.group.length; i++) {
       const group = parent.group[i];
-      if (!this.groupContainsFilterRecusive(group)) {
+      if (!group.meetsFilter) {
         continue;
       }
       const newBranch = {
         module: group.id,
         children: [],
-        collapsed: true,
+        collapsed: collapse,
         group: group,
         parent: treeNode,
       };
-      this.buildTreeRecursive(group, newBranch);
+      this.buildTreeRecursive(group, newBranch, collapse);
       for (let j = 0; j < group.entry.length; j++) {
         const entry = group.entry[j];
+        if (!entry.meetsFilter) {
+          continue;
+        }
         const newEntry = {
           module: entry.id,
           leaf: true,
@@ -294,70 +299,138 @@ class DialogueTree extends Component {
     }
   }
 
-  groupContainsFilterRecusive = (group) => {
-    if (this.groupContainsFilterId(group)) {
-      return true;
-    }
-    for (let i = 0; i < group.group.length; i++) {
-      if (this.groupContainsFilterRecusive(group.group[i])) {
-        return true;
-      }
-    }
-    return false;
+  isFilteringId = () => {
+    return this.props.filterId !== '';
   }
 
-  groupContainsFilterId = (group) => {
-    if (group.id === 'Content') {
-      return true; // Always show root node
-    }
-    // No filter, render
-    if (this.props.filterId === '') {
-      return true;
-    }
-    // We contain filter, render
-    if (group.id.toLowerCase().includes(this.props.filterId)) {
-      return true;
-    }
-    // Entry contains filter, render
-    for (let i = 0; i < group.entry.length; i++) {
-      if (this.entryMeetsFilterCriteria(group.entry[i])) {
-        return true;
+  isFilteringText = () => {
+    return this.props.filterText !== '';
+  }
+
+  markFiltersRecursive = (filterId, filterText, group, parentFiltered, count) => {
+    // Mark filter state of ids
+    const groupMeetsId = this.groupMeetsFilterIdCriteria(group);
+    if (filterId && filterText) {
+      // Show only entries with matching text that have matching ids somewhere in their history
+      group.meetsFilter = false;
+      const renderChildren = parentFiltered | groupMeetsId;
+      // Handle entries
+      for (let i = 0; i < group.entry.length; i++) {
+        const entry = group.entry[i];
+        const entryMeetsId = this.entryMeetsFilterIdCriteria(entry);
+        const entryMeetsText = this.entryMeetsFilterTextCriteria(entry);
+        if ((renderChildren || entryMeetsId) && entryMeetsText) {
+          count.num++;
+          entry.meetsFilter = true;
+          group.meetsFilter = true;
+        } else {
+          entry.meetsFilter = false;
+        }
+      }
+      // Look at child groups
+      for (let i = 0; i < group.group.length; i++) {
+        if (this.markFiltersRecursive(filterId, filterText, group.group[i], renderChildren, count)) {
+          group.meetsFilter = true;
+        }
+      }
+    } else if (filterId) {
+      // Show any matching ids, and show all children of matching groups
+      group.meetsFilter = parentFiltered | groupMeetsId;
+      // If we were filtered, render all children
+      const renderChildren = group.meetsFilter;
+      // Handle entries
+      for (let i = 0; i < group.entry.length; i++) {
+        const entry = group.entry[i];
+        const entryMeetsId = this.entryMeetsFilterIdCriteria(entry);
+        if (renderChildren || entryMeetsId) {
+          count.num++;
+          entry.meetsFilter = true;
+          group.meetsFilter = true;
+        } else {
+          entry.meetsFilter = false;
+        }
+      }
+      // Handle child groups
+      for (let i = 0; i < group.group.length; i++) {
+        if (this.markFiltersRecursive(filterId, filterText, group.group[i], renderChildren, count)) {
+          group.meetsFilter = true;
+        }
+      }
+    } else if (filterText) {
+      // Show only entries with matching text
+      group.meetsFilter = false;
+      for (let i = 0; i < group.entry.length; i++) {
+        const entry = group.entry[i];
+        const entryMeetsText = this.entryMeetsFilterTextCriteria(entry);
+        if (entryMeetsText) {
+          count.num++;
+          entry.meetsFilter = true;
+          group.meetsFilter = true;
+        } else {
+          entry.meetsFilter = false;
+        }
+      }
+      // Handle child groups
+      for (let i = 0; i < group.group.length; i++) {
+        if (this.markFiltersRecursive(filterId, filterText, group.group[i], false, count)) {
+          group.meetsFilter = true;
+        }
+      }
+    } else {
+      // Show everything
+      group.meetsFilter = true;
+      for (let i = 0; i < group.entry.length; i++) {
+        count.num++;
+        group.entry[i].meetsFilter = true;
+      }
+      for (let i = 0; i < group.group.length; i++) {
+        this.markFiltersRecursive(filterId, filterText, group.group[i], false, count);
       }
     }
-    // Parent contains filter, render
-    if (this.parentContainsFilterId(group)) {
+
+    // Always show content, but it doesn't count for filtering
+    if (group.id === 'Content') {
+      group.meetsFilter = true;
+    }
+    
+    if (group.meetsFilter) {
+      count.num++;
+    }
+    return group.meetsFilter;
+  }
+
+  groupMeetsFilterIdCriteria = (group) => {
+    // We contain filter, render
+    if (group.id.toLowerCase().includes(this.props.filterId)) {
       return true;
     }
     // We don't contain filter
     return false;
   }
 
-  parentContainsFilterId = (group) => {
-    // Don't count root
-    if (group.id.includes('Content')) {
-      return false;
-    }
-    // We contain filter, render
-    if (group.id.toLowerCase().includes(this.props.filterId)) {
-      return true;
-    }
-    return this.parentContainsFilterId(group.parent);
-  }
-
-  entryMeetsFilterCriteria = (entry) => {
-    // No filter, render
-    if (this.props.filterId === '') {
-      return true;
-    }
+  entryMeetsFilterIdCriteria = (entry) => {
     // We contain filter, render
     if (entry.id.toLowerCase().includes(this.props.filterId)) {
       return true;
     }
-    // We contain text filter, render
-    // TODO CHECK ENTRY TEXT
-    // if (entry.text.toLowerCase().includes(this.props.filterText)) {
-    //   return true;
-    // }
+    // We don't contain filter
+    return false;
+  }
+
+  entryMeetsFilterTextCriteria = (entry) => {
+    // We contain filter text, render
+    const region = constants.getRegionFromEntry(entry, this.props.region);
+    if (region !== undefined) {
+      const regionPages = region.page;
+      if (regionPages !== undefined) {
+        for (let i = 0; i < regionPages.length; i++) {
+          const page = regionPages[i];
+          if (page.text.toLowerCase().includes(this.props.filterText)) {
+            return true;
+          }
+        }
+      }
+    }
     // We don't contain filter
     return false;
   }
