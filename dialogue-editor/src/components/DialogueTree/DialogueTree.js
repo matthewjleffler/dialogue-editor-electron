@@ -401,7 +401,7 @@ class DialogueTree extends Component {
 
   groupMeetsFilterIdCriteria = (group) => {
     // We contain filter, render
-    if (group.id.toLowerCase().includes(this.props.filterId)) {
+    if (group.path && group.path.toLowerCase().includes(this.props.filterId)) {
       return true;
     }
     // We don't contain filter
@@ -410,7 +410,7 @@ class DialogueTree extends Component {
 
   entryMeetsFilterIdCriteria = (entry) => {
     // We contain filter, render
-    if (entry.id.toLowerCase().includes(this.props.filterId)) {
+    if (entry.path && entry.path.toLowerCase().includes(this.props.filterId)) {
       return true;
     }
     // We don't contain filter

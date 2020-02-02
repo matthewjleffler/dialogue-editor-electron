@@ -9,7 +9,7 @@ import DialogueTree from './components/DialogueTree/DialogueTree';
 import DialoguePages from './components/DialoguePages/DialoguePages';
 import DialogueOptions from './components/DialogueOptions/DialogueOptions';
 const { ipcRenderer, webFrame } = window.require('electron');
-var SpellCheckProvider = window.require('electron-spell-check-provider');
+const SpellCheckProvider = window.require('electron-spell-check-provider');
 
 class App extends Component {
   constructor(props) {
@@ -75,6 +75,17 @@ class App extends Component {
     this.props.actionEntrySetRegion(loadedData.info.activeregion);
   }
 
+  getEntryPath(entry) {
+    if (entry.parent === undefined || entry.id === 'Content') {
+      return '';
+    }
+    const parentPath = this.getEntryPath(entry.parent);
+    if (parentPath !== '') {
+      return parentPath + '.' + entry.id;
+    }
+    return entry.id;
+  }
+
   buildParsedGroupsRecursive(parent, parsedGroup) {
     if (parsedGroup === null) {
       // Nothing in the parent group
@@ -88,6 +99,7 @@ class App extends Component {
         entry: [],
         parent: parent,
       };
+      newGroup.path = this.getEntryPath(newGroup);
       parent.group.push(newGroup);
       this.buildParsedEntry(newGroup, constants.getArrayProperty(group.entry));
       this.buildParsedGroupsRecursive(newGroup, constants.getArrayProperty(group.group));
@@ -108,6 +120,7 @@ class App extends Component {
         region: [],
         parent: parent,
       };
+      newEntry.path = this.getEntryPath(newEntry);
       parent.entry.push(newEntry);
       this.buildParsedRegion(newEntry.region, constants.getArrayProperty(entry.region));
     });
