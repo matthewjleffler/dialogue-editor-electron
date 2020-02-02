@@ -38,7 +38,7 @@
     "wait-on": "^3.3.0"
   },
   "build": {
-    "appId": "com.your-domain",
+    "appId": "com.softdrawers.dialogueeditor",
     "compression": "normal",
     "productName": "Example",
     "directories": {
@@ -49,44 +49,9 @@
       "icon": "assets/icon.icns",
       "type": "distribution",
       "target": [
-        "pkg",
-        "dmg",
-        "mas"
+        "dmg"
       ],
-      "publish": {
-        "provider": "s3",
-        "bucket": "example-releases",
-        "path": "releases"
-      },
-      "category": "public.app-category.news"
-    },
-    "mas": {
-      "entitlements": "assets/entitlements.mas.plist",
-      "entitlementsInherit": "assets/entitlements.mas.inherit.plist",
-      "provisioningProfile": "assets/embedded.provisionprofile"
-    },
-    "win": {
-      "target": "nsis",
-      "icon": "assets/icon.ico",
-      "publish": {
-        "provider": "s3",
-        "bucket": "example-releases",
-        "path": "releases"
-      }
-    },
-    "linux": {
-      "icon": "assets/icon.png",
-      "target": [
-        "snap",
-        "AppImage"
-      ],
-      "description": "Example",
-      "category": "Network;Feed",
-      "publish": {
-        "provider": "s3",
-        "bucket": "example-releases",
-        "path": "releases"
-      }
+      "category": "public.app-category.developer-tools"
     }
   },
   "browserslist": {
