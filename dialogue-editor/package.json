@@ -7,6 +7,10 @@
   "license": "MIT",
   "homepage": "./",
   "main": "public/electron.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matthewjleffler/dialogue-editor-electron"
+  },
   "scripts": {
     "dev": "yarn react-scripts start",
     "build": "react-scripts build",
@@ -18,6 +22,9 @@
     "classnames": "^2.2.6",
     "electron-is-dev": "^0.3.0",
     "electron-publisher-s3": "^20.17.2",
+    "eslint-plugin-flowtype": "^3.13.0",
+    "fibers": "^4.0.2",
+    "node-sass": "^4.13.1",
     "react": "^16.12.0",
     "react-dev-utils": "^5.0.1",
     "react-dom": "^16.12.0",
@@ -25,15 +32,17 @@
     "react-ui-tree": "^4.0.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "sass": "^1.25.0",
+    "typescript": "^3.7.5",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "concurrently": "^3.6.0",
     "cross-env": "^5.2.1",
-    "electron": "^2.0.3",
+    "electron": "^2.0.18",
     "electron-builder": "^20.44.4",
     "electron-devtools-installer": "^2.2.4",
-    "react-scripts": "^3.3.0",
+    "react-scripts": "^3.3.1",
     "version-bump-prompt": "^4.1.0",
     "wait-on": "^3.3.0"
   },
