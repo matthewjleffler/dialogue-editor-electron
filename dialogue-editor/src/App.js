@@ -8,7 +8,8 @@ import StatusBar from './components/StatusBar/StatusBar';
 import DialogueTree from './components/DialogueTree/DialogueTree';
 import DialoguePages from './components/DialoguePages/DialoguePages';
 import DialogueOptions from './components/DialogueOptions/DialogueOptions';
-const { ipcRenderer } = window.require('electron');
+const { ipcRenderer, webFrame } = window.require('electron');
+var SpellCheckProvider = window.require('electron-spell-check-provider');
 
 class App extends Component {
   constructor(props) {
@@ -36,6 +37,7 @@ class App extends Component {
     ipcRenderer.on('tree_change', this.onTreeDataChanged);
     ipcRenderer.on('get-project-export', this.onGetProjectExportRequest);
     ipcRenderer.send('reload-last-project');
+    webFrame.setSpellCheckProvider('en-us', false, new SpellCheckProvider('en-US'));
   }
 
   componentWillUnmount() {

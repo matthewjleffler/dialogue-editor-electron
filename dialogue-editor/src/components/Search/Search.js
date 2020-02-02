@@ -31,6 +31,7 @@ class Search extends Component {
       <div className="Search">
         <input
           type="text"
+          spellCheck={false}
           value={this.state.searchString}
           placeholder={this.props.label}
           onChange={this.onChange}

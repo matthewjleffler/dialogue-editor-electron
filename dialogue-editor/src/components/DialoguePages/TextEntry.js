@@ -94,6 +94,7 @@ class TextEntry extends Component {
         >
           <input
             className="TextLine"
+            spellCheck={false}
             ref={(input) => { this.inputLine = input;}}
             type="text"
             value={this.state.value}
