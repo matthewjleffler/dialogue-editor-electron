@@ -24,6 +24,8 @@
   width: 100%;
   min-height: 22px;
   border-radius: 4px;
+  align-items: center;
+  justify-content: center;
   color: #ffffff;
   background-color: rgba(100,100,100,1);
 }
@@ -46,4 +48,19 @@ select:focus,
 textarea:focus,
 button:focus {
   outline: none;
+}
+
+.Search button {
+  height: 18px;
+  width: 18px;
+  border: none;
+  margin-right: 2px;
+  color: #ffffff;
+  background-color: #aaaaaa;
+  border-radius: 50%;
+  text-align: center;
+}
+
+.Search button:active {
+  background-color: #888888;
 }
