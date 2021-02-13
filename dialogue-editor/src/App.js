@@ -8,8 +8,7 @@ import StatusBar from './components/StatusBar/StatusBar';
 import DialogueTree from './components/DialogueTree/DialogueTree';
 import DialoguePages from './components/DialoguePages/DialoguePages';
 import DialogueOptions from './components/DialogueOptions/DialogueOptions';
-const { ipcRenderer, webFrame } = window.require('electron');
-const SpellCheckProvider = window.require('electron-spell-check-provider');
+const { ipcRenderer } = window.require('electron');
 
 class App extends Component {
   constructor(props) {
@@ -32,12 +31,11 @@ class App extends Component {
       }
     };
   }
-  
+
   componentDidMount() {
     ipcRenderer.on('tree_change', this.onTreeDataChanged);
     ipcRenderer.on('get-project-export', this.onGetProjectExportRequest);
     ipcRenderer.send('reload-last-project');
-    webFrame.setSpellCheckProvider('en-us', false, new SpellCheckProvider('en-US'));
   }
 
   componentWillUnmount() {
@@ -160,7 +158,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="Header"/>
+        <header className="Header" />
         <StatusBar />
         <div className="DialogueContainer">
           <DialogueTree tree={this.state.data} />
@@ -168,7 +166,7 @@ class App extends Component {
           <DialogueOptions />
         </div>
       </div>
-    ); 
+    );
   }
 }
 
