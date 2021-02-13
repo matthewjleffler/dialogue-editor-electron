@@ -32,7 +32,7 @@ class Page extends Component {
     // Re-escape the text and update the data store
     const escapedText = visualText.split('\n').join('\\n');
     this.props.region.page[this.props.index].text = escapedText;
-    this.setState({value: visualText});
+    this.setState({ value: visualText });
   }
 
   handleSubmit = (event) => {
@@ -63,7 +63,7 @@ class Page extends Component {
           <form className="ViewForm" onSubmit={this.handleSubmit}>
             <textarea
               className="ViewTextArea"
-              maxLength={37*7}
+              maxLength={37 * 7}
               value={this.state.value}
               onChange={this.handleChange}
               spellCheck={true}
