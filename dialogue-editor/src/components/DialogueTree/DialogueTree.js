@@ -83,7 +83,7 @@ class DialogueTree extends Component {
         window.alert('Cannot rename root group');
         return;
       }
-      
+
       this.displayTextEntry(constants.INPUT_TYPE.RENAME_GROUP, this.contextNode.group.id);
     } else {
       this.displayTextEntry(constants.INPUT_TYPE.RENAME_ENTRY, this.contextNode.entry.id);
@@ -111,13 +111,13 @@ class DialogueTree extends Component {
       const group = this.contextNode.group;
       let groupCount = 0;
       let entryCount = 0;
-      this.iterateGroups(group, 
+      this.iterateGroups(group,
         (childGroup) => {
           groupCount++;
         },
         (childEntry) => {
           entryCount++;
-        } 
+        }
       );
 
       let prompt = `Are you sure you want to delete the group "${group.id}"?`;
@@ -392,7 +392,7 @@ class DialogueTree extends Component {
     if (group.id === 'Content') {
       group.meetsFilter = true;
     }
-    
+
     if (group.meetsFilter) {
       count.num++;
     }
@@ -452,11 +452,6 @@ class DialogueTree extends Component {
           numPages = regionPages.length;
         }
       }
-      type = (
-        <div className="type">
-          {constants.ENTRY_TYPE[entry.type]}
-        </div>
-      );
       pages = (
         <div className="pages">
           {numPages}
@@ -585,7 +580,7 @@ class DialogueTree extends Component {
 
   componentDidUpdate(prevProps) {
     if (
-      this.props.tree !== prevProps.tree || 
+      this.props.tree !== prevProps.tree ||
       this.props.filterId !== prevProps.filterId ||
       this.props.filterText !== prevProps.filterText
     ) {
@@ -602,7 +597,7 @@ class DialogueTree extends Component {
   render() {
     return (
       <div className="TrayTree">
-        <Search label="Search Ids:" dispatchAction={this.props.actionTreeSetFilterId}/>
+        <Search label="Search Ids:" dispatchAction={this.props.actionTreeSetFilterId} />
         <div className="TreeContainer Scrolling">
           {/* <Search label="Search Ids:" dispatchAction={this.props.actionTreeSetFilterId}/> */}
           <Tree

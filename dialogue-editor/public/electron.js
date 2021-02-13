@@ -154,7 +154,7 @@ function groupToXmlRecursive(indent, group) {
   }
   for (let g = 0; g < group.entry.length; g++) {
     const entry = group.entry[g];
-    result += `${getIndent(indent + 1)}<entry id="${entry.id}" type="${entry.type}" color="${entry.color}" mod="${entry.mod}">\n`;
+    result += `${getIndent(indent + 1)}<entry id="${entry.id}" mod="${entry.mod}">\n`;
     for (let r = 0; r < entry.region.length; r++) {
       const region = entry.region[r];
       result += `${getIndent(indent + 2)}<region id="${region.id}">\n`;
@@ -227,13 +227,6 @@ function getEntryPath(entry) {
   return entry.id;
 }
 
-function getEntryFlag(entry) {
-  switch (entry.type) {
-    case 'DIARY': return 'r';
-    default: return 'n';
-  }
-}
-
 function cleanText(text) {
   text = text.trimLeft();
   text = text.trimRight();
@@ -274,7 +267,7 @@ function dataToExportXml(data) {
       if (entryRegion === null) {
         continue;
       }
-      result += `\t\t<line id="${getEntryPath(entry)}" flag="${getEntryFlag(entry)}"><![CDATA[${getRegionPages(entryRegion)}]]></line>\n`;
+      result += `\t\t<line id="${getEntryPath(entry)}"><![CDATA[${getRegionPages(entryRegion)}]]></line>\n`;
     }
 
     result += `\t</region>\n`;

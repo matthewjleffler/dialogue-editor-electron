@@ -5,7 +5,6 @@ import { actionEntrySetRegion, actionEntrySetRegionList } from '../../actions/en
 import './StatusBar.css';
 import '../DialogueTree/DialogueTree.css';
 import '../DialoguePages/DialoguePages.css';
-import '../DialogueOptions/DialogueOptions.css';
 
 class StatusBar extends Component {
 
@@ -50,8 +49,6 @@ class StatusBar extends Component {
         </div>
         <div className="DialoguePagesContainer">
           {entryTitle}
-        </div>
-        <div className="OptionsContainer">
         </div>
       </div>
     );
