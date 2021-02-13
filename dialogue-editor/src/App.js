@@ -7,7 +7,6 @@ import './App.css';
 import StatusBar from './components/StatusBar/StatusBar';
 import DialogueTree from './components/DialogueTree/DialogueTree';
 import DialoguePages from './components/DialoguePages/DialoguePages';
-import DialogueOptions from './components/DialogueOptions/DialogueOptions';
 const { ipcRenderer } = window.require('electron');
 
 class App extends Component {
@@ -112,8 +111,6 @@ class App extends Component {
     parsedEntry.forEach((entry) => {
       const newEntry = {
         id: entry._attributes.id,
-        type: entry._attributes.type,
-        color: entry._attributes.color,
         mod: entry._attributes.mod,
         region: [],
         parent: parent,
@@ -163,7 +160,6 @@ class App extends Component {
         <div className="DialogueContainer">
           <DialogueTree tree={this.state.data} />
           <DialoguePages />
-          <DialogueOptions />
         </div>
       </div>
     );

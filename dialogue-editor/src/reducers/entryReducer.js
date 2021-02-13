@@ -23,8 +23,6 @@ export default (state = initialState, action) => {
       return {
         ...state,
         entry: action.payload,
-        type: action.payload.type,
-        color: action.payload.color,
       };
     case constants.ACTION_ENTRY_SET_REGION:
       return {
