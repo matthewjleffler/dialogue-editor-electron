@@ -1,4 +1,4 @@
-const { 
+const {
   app,
   BrowserWindow,
   shell,
@@ -69,7 +69,7 @@ function createWindow() {
 function writeProjectPath() {
   const fs = require('fs');
   const exportPath = app.getPath('userData') + '/userData.txt';
-  fs.writeFile(exportPath, currentProjectPath, callback=(err) => {
+  fs.writeFile(exportPath, currentProjectPath, callback = (err) => {
     // console.log(`Saved Project Path: ${currentProjectPath}`);
   });
 }
@@ -79,7 +79,7 @@ function readProjectPath() {
   const exportPath = app.getPath('userData') + '/userData.txt';
   fs.exists(exportPath, (exists) => {
     if (exists) {
-      fs.readFile(exportPath,'utf-8', (err, data) => {
+      fs.readFile(exportPath, 'utf-8', (err, data) => {
         if (err) {
           return;
         }
@@ -102,30 +102,29 @@ function finishOpenProject() {
       return;
     }
     const convert = require('xml-js');
-    const result = convert.xml2js(data, {compact: true});
-    mainWindow.webContents.send('tree_change', {msg: result});
+    const result = convert.xml2js(data, { compact: true });
+    mainWindow.webContents.send('tree_change', { msg: result });
   });
 }
 
 function openProject() {
   const dialog = require('electron').dialog;
-  const paths = dialog.showOpenDialog({
-      title: "Open Project",
-      filters: [{ name: "Project", extensions: ['dpr'] }],
-      properties: ["openFile"],
-    },
-  );
-  if (paths === undefined) {
-    return;
-  }
-  currentProjectPath = paths[0];
-  writeProjectPath();
-
-  finishOpenProject();
+  dialog.showOpenDialog({
+    title: "Open Project",
+    filters: [{ name: "Project", extensions: ['dpr'] }],
+    properties: ["openFile"],
+  }).then(result => {
+    if (result === undefined || result.filePaths === undefined) {
+      return;
+    }
+    currentProjectPath = result.filePaths[0];
+    writeProjectPath();
+    finishOpenProject();
+  });
 }
 
 function requestSave(doSaveAs, doExport) {
-  mainWindow.webContents.send('get-project-export', {msg: {doSaveAs: doSaveAs, doExport: doExport}});
+  mainWindow.webContents.send('get-project-export', { msg: { doSaveAs: doSaveAs, doExport: doExport } });
 }
 
 function saveProject() {
@@ -231,7 +230,7 @@ function getEntryPath(entry) {
 function getEntryFlag(entry) {
   switch (entry.type) {
     case 'DIARY': return 'r';
-    default:      return 'n';
+    default: return 'n';
   }
 }
 
@@ -262,7 +261,7 @@ function dataToExportXml(data) {
 
   const allEntries = [];
   getAllEntries(allEntries, data.group[0]);
-  
+
   result += `<data>\n`;
 
   for (let r = 0; r < data.info.regions.length; r++) {
@@ -277,10 +276,10 @@ function dataToExportXml(data) {
       }
       result += `\t\t<line id="${getEntryPath(entry)}" flag="${getEntryFlag(entry)}"><![CDATA[${getRegionPages(entryRegion)}]]></line>\n`;
     }
-    
+
     result += `\t</region>\n`;
   }
-  
+
   result += `</data>\n`;
 
   return result;
@@ -313,12 +312,12 @@ function finishSaveProject(args) {
   if (doExport) {
     resultString = dataToExportXml(data);
     const exportPath = app.getPath('desktop') + '/translation.xml';
-    fs.writeFile(exportPath, resultString, callback=(err) => {
+    fs.writeFile(exportPath, resultString, callback = (err) => {
       console.log(`Exported to: ${exportPath}`);
     });
   } else {
     resultString = dataToXml(data);
-    fs.writeFile(currentProjectPath, resultString, callback=(err) => {
+    fs.writeFile(currentProjectPath, resultString, callback = (err) => {
       console.log(`Saved Project to: ${currentProjectPath}`);
     });
     writeProjectPath();
