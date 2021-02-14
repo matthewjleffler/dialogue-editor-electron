@@ -155,7 +155,6 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="Header" />
         <StatusBar />
         <div className="DialogueContainer">
           <DialogueTree tree={this.state.data} />

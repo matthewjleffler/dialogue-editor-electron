@@ -83,7 +83,6 @@ class DialogueTree extends Component {
         window.alert('Cannot rename root group');
         return;
       }
-
       this.displayTextEntry(constants.INPUT_TYPE.RENAME_GROUP, this.contextNode.group.id);
     } else {
       this.displayTextEntry(constants.INPUT_TYPE.RENAME_ENTRY, this.contextNode.entry.id);
@@ -599,7 +598,6 @@ class DialogueTree extends Component {
       <div className="TrayTree">
         <Search label="Search Ids:" dispatchAction={this.props.actionTreeSetFilterId} />
         <div className="TreeContainer Scrolling">
-          {/* <Search label="Search Ids:" dispatchAction={this.props.actionTreeSetFilterId}/> */}
           <Tree
             paddingLeft={20}
             tree={this.state.tree}

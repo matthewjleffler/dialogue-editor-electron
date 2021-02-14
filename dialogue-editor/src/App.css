@@ -8,15 +8,10 @@
   font-size: 13px;
 }
 
-.Header {
-  height: 23px;
-  background-color: #181c24;
-  -webkit-app-region: drag;
-}
-
 .DialogueContainer {
   display: flex;
   flex: 1;
+  height: 10vh;
 }
 
 .Search {
