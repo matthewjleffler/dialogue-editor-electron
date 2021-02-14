@@ -20,7 +20,6 @@ function createWindow() {
     backgroundColor: '#F7F7F7',
     minWidth: 700,
     show: false,
-    titleBarStyle: 'hidden',
     webPreferences: {
       nodeIntegration: true,
     },
