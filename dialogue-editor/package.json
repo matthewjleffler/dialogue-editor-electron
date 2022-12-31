@@ -44,7 +44,7 @@
     "electron-builder": "^20.44.4",
     "electron-devtools-installer": "^2.2.4",
     "electron-rebuild": "^1.11.0",
-    "react-scripts": "^3.4.4",
+    "react-scripts": "^5.0.1",
     "version-bump-prompt": "^4.1.0",
     "wait-on": "^5.2.1"
   },
